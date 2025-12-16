@@ -1,1 +1,1 @@
-# Fitness_django
+# GymHub Rwanda
