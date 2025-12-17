@@ -113,254 +113,205 @@ Trainer profiles with certifications and specialties
 
 
 ## Target User Groups
-GymHub Rwanda – User Step-by-Step System Flow
-1️⃣ Gym Owner
 
-Role Summary: Manages gym branches, finances, staff, and overall operations.
+### GymHub Rwanda – User Step-by-Step System Flow
 
-Step-by-Step Actions:
+---
 
-Login / Authentication
+## 1️⃣ Gym Owner
 
-Log in with phone/email and password.
+**Role Summary:** Manages gym branches, finances, staff, and overall operations.
 
-Dashboard Access
+**Step-by-Step Actions:**
 
-View overview: total members, revenue, upcoming classes.
+- **Login / Authentication**  
+  - Log in with phone/email and password.
 
-Manage Gym Branches
+- **Dashboard Access**  
+  - View overview: total members, revenue, upcoming classes.
 
-Add a new branch.
+- **Manage Gym Branches**  
+  - Add a new branch.  
+  - Update branch info (address, operating hours).  
+  - Remove a branch if needed.
 
-Update branch info (address, operating hours).
+- **Manage Facilities & Equipment**  
+  - Add/update gym facilities and amenities.  
+  - Track equipment inventory and schedule maintenance.
 
-Remove a branch if needed.
+- **Staff Management**  
+  - Add new staff accounts.  
+  - Edit staff info or deactivate accounts.
 
-Manage Facilities & Equipment
+- **Membership Tracking**  
+  - Monitor member statistics (active, expired, suspended).  
+  - View membership tier distribution (Basic, Premium, Corporate).
 
-Add/update gym facilities and amenities.
+- **Financial Reporting**  
+  - Access revenue and payment reports.  
+  - Analyze trends for branches.
 
-Track equipment inventory and schedule maintenance.
+- **Attendance & Retention Analytics**  
+  - View member check-in trends.  
+  - Track class popularity and retention metrics.
 
-Staff Management
+---
 
-Add new staff accounts.
+## 2️⃣ Gym Staff
 
-Edit staff info or deactivate accounts.
+**Role Summary:** Handles day-to-day gym operations, assists members, and processes payments.
 
-Membership Tracking
+**Step-by-Step Actions:**
 
-Monitor member statistics (active, expired, suspended).
+- **Login**  
+  - Phone/email + password.
 
-View membership tier distribution (Basic, Premium, Corporate).
+- **Dashboard**  
+  - Overview of members scheduled today, class bookings.
 
-Financial Reporting
+- **Member Check-in / Check-out**  
+  - Scan member QR code or manual check-in.
 
-Access revenue and payment reports.
+- **Payment Processing**  
+  - Record cash payments.  
+  - Optionally integrate mobile money payments.
 
-Analyze trends for branches.
+- **Class Booking Management**  
+  - Approve or cancel bookings.  
+  - Reschedule classes if necessary.
 
-Attendance & Retention Analytics
+- **Track Attendance**  
+  - Monitor member attendance for classes and gym sessions.
 
-View member check-in trends.
+- **Monitor Gym Usage**  
+  - Track peak hours and occupancy.
 
-Track class popularity and retention metrics.
+- **Assist Members**  
+  - Answer inquiries, provide support for booking, membership, or facility use.
 
-2️⃣ Gym Staff
+---
 
-Role Summary: Handles day-to-day gym operations, assists members, and processes payments.
+## 3️⃣ Member
 
-Step-by-Step Actions:
+**Role Summary:** Uses gym facilities, books classes, manages profile and payments.
 
-Login
+**Step-by-Step Actions:**
 
-Phone/email + password.
+- **Registration**  
+  - Register with phone (+2507xxxxxxx), email, and emergency contact.
 
-Dashboard
+- **Login**  
+  - Access account with phone/email and password.
 
-Overview of members scheduled today, class bookings.
+- **Profile Management**  
+  - Upload profile photo.  
+  - Update personal information.
 
-Member Check-in / Check-out
+- **View Gym & Class Schedule**  
+  - Browse available gyms and classes.  
+  - Check class capacity and schedule.
 
-Scan member QR code or manual check-in.
+- **Class Booking**  
+  - Book desired fitness classes.  
+  - Join waitlist if full.
 
-Payment Processing
+- **Attend Classes / Gym Sessions**  
+  - Scan QR code for check-in/check-out.  
+  - Track attendance automatically.
 
-Record cash payments.
+- **Track Personal Progress**  
+  - View class history, attendance, and performance.
 
-Optionally integrate mobile money payments.
+- **Payments**  
+  - Make payments for membership or classes.  
+  - Receive digital receipt.
 
-Class Booking Management
+- **Membership Renewal**  
+  - Receive notifications for renewal.
 
-Approve or cancel bookings.
+---
 
-Reschedule classes if necessary.
+## 4️⃣ Trainer
 
-Track Attendance
+**Role Summary:** Manages schedule, clients, and performance tracking.
 
-Monitor member attendance for classes and gym sessions.
+**Step-by-Step Actions:**
 
-Monitor Gym Usage
+- **Login**  
+  - Phone/email + password.
 
-Track peak hours and occupancy.
+- **Profile Setup**  
+  - Add certifications, specialties, and bio.
 
-Assist Members
+- **Schedule Management**  
+  - Set availability for personal and class sessions.  
+  - Update schedule for public holidays.
 
-Answer inquiries, provide support for booking, membership, or facility use.
+- **Client Management**  
+  - View assigned clients.  
+  - Track client progress.
 
-3️⃣ Member
+- **Class Assignment**  
+  - Manage classes they are assigned to teach.  
+  - Approve or reject class bookings if needed.
 
-Role Summary: Uses gym facilities, books classes, manages profile and payments.
+- **Commission Tracking**  
+  - View earnings from freelance sessions.
 
-Step-by-Step Actions:
+- **Analytics**  
+  - Monitor client engagement and session popularity.
 
-Registration
+---
 
-Register with phone (+2507xxxxxxx), email, and emergency contact.
+## 5️⃣ Admin
 
-Login
+**Role Summary:** Oversees system configuration, analytics, and security.
 
-Access account with phone/email and password.
+**Step-by-Step Actions:**
 
-Profile Management
+- **Login**  
+  - Admin credentials.
 
-Upload profile photo.
+- **System Configuration**  
+  - Configure multi-language support (English, Kinyarwanda, French).  
+  - Configure public holiday schedules.  
+  - Set system-wide settings.
 
-Update personal information.
+- **User Management**  
+  - Add/edit/remove all users (Owner, Staff, Trainer, Member).  
+  - Assign roles and permissions.
 
-View Gym & Class Schedule
+- **Analytics Dashboard**  
+  - Access reports on revenue, attendance, member retention.  
+  - Track system usage trends.
 
-Browse available gyms and classes.
+- **Monitor System Performance**  
+  - Ensure uptime and correct data tracking.
 
-Check class capacity and schedule.
+- **Security & Access Control**  
+  - Manage passwords, reset accounts, control access levels.
 
-Class Booking
+---
 
-Book desired fitness classes.
+## 6️⃣ Optional: Guest / Visitor
 
-Join waitlist if full.
+**Role Summary:** Non-members exploring the gym.
 
-Attend Classes / Gym Sessions
+**Step-by-Step Actions:**
 
-Scan QR code for check-in/check-out.
+- **Browse Gym Information**  
+  - View available gym branches.  
+  - Check class schedules and amenities.
 
-Track attendance automatically.
+- **Limited Booking**  
+  - Book a guest pass if available.
 
-Track Personal Progress
+- **Learn Membership Options**  
+  - See membership tiers (Basic, Premium, Corporate) and benefits.
 
-View class history, attendance, and performance.
+- **Optional Registration**  
+  - Register as a member to unlock full features.
 
-Payments
-
-Make payments for membership or classes.
-
-Receive digital receipt.
-
-Membership Renewal
-
-Receive notifications for renewal.
-
-4️⃣ Trainer
-
-Role Summary: Manages schedule, clients, and performance tracking.
-
-Step-by-Step Actions:
-
-Login
-
-Phone/email + password.
-
-Profile Setup
-
-Add certifications, specialties, and bio.
-
-Schedule Management
-
-Set availability for personal and class sessions.
-
-Update schedule for public holidays.
-
-Client Management
-
-View assigned clients.
-
-Track client progress.
-
-Class Assignment
-
-Manage classes they are assigned to teach.
-
-Approve or reject class bookings if needed.
-
-Commission Tracking
-
-View earnings from freelance sessions.
-
-Analytics
-
-Monitor client engagement and session popularity.
-
-5️⃣ Admin
-
-Role Summary: Oversees system configuration, analytics, and security.
-
-Step-by-Step Actions:
-
-Login
-
-Admin credentials.
-
-System Configuration
-
-Configure multi-language support (English, Kinyarwanda, French).
-
-Configure public holiday schedules.
-
-Set system-wide settings.
-
-User Management
-
-Add/edit/remove all users (Owner, Staff, Trainer, Member).
-
-Assign roles and permissions.
-
-Analytics Dashboard
-
-Access reports on revenue, attendance, member retention.
-
-Track system usage trends.
-
-Monitor System Performance
-
-Ensure uptime and correct data tracking.
-
-Security & Access Control
-
-Manage passwords, reset accounts, control access levels.
-
-6️⃣ Optional: Guest / Visitor
-
-Role Summary: Non-members exploring the gym.
-
-Step-by-Step Actions:
-
-Browse Gym Information
-
-View available gym branches.
-
-Check class schedules and amenities.
-
-Limited Booking
-
-Book a guest pass if available.
-
-Learn Membership Options
-
-See membership tiers (Basic, Premium, Corporate) and benefits.
-
-Optional Registration
-
-Register as a member to unlock full features.
 
 
 
