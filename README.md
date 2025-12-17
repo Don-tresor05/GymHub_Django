@@ -21,7 +21,7 @@
 
 ## B. Gym Management
 ### Create and manage multiple gym locations
-    ========================================
+   =============================================
 
 - Set gym operating hours
 
