@@ -9,7 +9,7 @@
 
 ## A. Authentication & User Management
 ### Multi-role authentication (Owner, Staff, Member, Trainer)
-==========================================================
+   ==========================================================
 
 - Phone number-based registration (Rwandan format: +2507xxxxxxx)
 
@@ -20,8 +20,8 @@
 - Profile management with photo upload
 
 ## B. Gym Management
-Create and manage multiple gym locations
-========================================
+### Create and manage multiple gym locations
+    ========================================
 
 - Set gym operating hours
 
@@ -32,8 +32,8 @@ Create and manage multiple gym locations
 - Branch management for chain gyms
 
 ## C. Member Management
-Digital member registration with required info (name, phone, emergency contact)
-===============================================================================
+### Digital member registration with required info (name, phone, emergency contact)
+    ===============================================================================
 
 - Membership tier system (Basic, Premium, Corporate)
  
@@ -44,8 +44,8 @@ Digital member registration with required info (name, phone, emergency contact)
 - Digital membership card with QR code
 
 ## D. Payment System
-Cash payment tracking
-=====================
+### Cash payment tracking
+    =====================
 
 - Mobile Money payment integration (MTN & Airtel)
  
@@ -56,8 +56,8 @@ Cash payment tracking
 - Membership renewal notifications via SMS
 
 ## E. Class & Scheduling
-Create fitness classes (yoga, aerobics, weight training, traditional dance)
-============================================================================
+### Create fitness classes (yoga, aerobics, weight training, traditional dance)
+    ============================================================================
 
 - Set class schedules with capacity limits
  
@@ -70,8 +70,8 @@ Create fitness classes (yoga, aerobics, weight training, traditional dance)
 - Special holiday schedules (Rwandan public holidays)
 
 ## F. Attendance System
-QR code check-in/check-out
-==========================
+### QR code check-in/check-out
+    ==========================
 
 - Session tracking and usage analytics
  
@@ -90,8 +90,8 @@ Trainer profiles with certifications and specialties
 - Commission tracking for freelance trainers
 
 ## H. Rwandan-Specific Features
-Multi-language support (English, Kinyarwanda, French)
-======================================================
+  ### Multi-language support (English, Kinyarwanda, French)
+      ======================================================
 
 - Public holiday auto-detection and schedule adjustment
  
@@ -100,8 +100,8 @@ Multi-language support (English, Kinyarwanda, French)
 - Cultural workout categories (Traditional dance, etc.)
 
 ## I. Reporting & Analytics
-Member attendance reports
-==========================
+### Member attendance reports
+    ==========================
 
 - Revenue tracking and financial reports
  
