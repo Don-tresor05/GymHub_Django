@@ -1,14 +1,14 @@
 # GymHub Rwanda - Django Gym Management System
 
-## A comprehensive gym management system tailored for Rwanda's fitness industry.
+### A comprehensive gym management system tailored for Rwanda's fitness industry.
 
 
 ## 1. Project Features Definition
 
-## Core Features for MVP (Minimum Viable Product)
+### Core Features for MVP (Minimum Viable Product)
 
 ## A. Authentication & User Management
-Multi-role authentication (Owner, Staff, Member, Trainer)
+### Multi-role authentication (Owner, Staff, Member, Trainer)
 ==========================================================
 
 - Phone number-based registration (Rwandan format: +2507xxxxxxx)
