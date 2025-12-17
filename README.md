@@ -21,7 +21,7 @@
 
 ## B. Gym Management
 ### Create and manage multiple gym locations
-   ==================================================
+==================================================
 
 - Set gym operating hours
 
@@ -33,7 +33,7 @@
 
 ## C. Member Management
 ### Digital member registration with required info (name, phone, emergency contact)
-    ====================================================================================
+   ====================================================================================
 
 - Membership tier system (Basic, Premium, Corporate)
  
@@ -45,7 +45,7 @@
 
 ## D. Payment System
 ### Cash payment tracking
-    ==============================
+   ==============================
 
 - Mobile Money payment integration (MTN & Airtel)
  
@@ -57,7 +57,7 @@
 
 ## E. Class & Scheduling
 ### Create fitness classes (yoga, aerobics, weight training, traditional dance)
-    ===============================================================================
+   ===============================================================================
 
 - Set class schedules with capacity limits
  
@@ -71,7 +71,7 @@
 
 ## F. Attendance System
 ### QR code check-in/check-out
-    ===================================
+   ===================================
 
 - Session tracking and usage analytics
  
@@ -91,7 +91,7 @@ Trainer profiles with certifications and specialties
 
 ## H. Rwandan-Specific Features
   ### Multi-language support (English, Kinyarwanda, French)
-      =============================================================
+   =============================================================
 
 - Public holiday auto-detection and schedule adjustment
  
@@ -101,7 +101,7 @@ Trainer profiles with certifications and specialties
 
 ## I. Reporting & Analytics
 ### Member attendance reports
-    =============================
+   =============================
 
 - Revenue tracking and financial reports
  
