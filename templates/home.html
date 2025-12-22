@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to GymHub Rwanda</h1>
+    <p class="lead">A comprehensive gym management system tailored for Rwanda's fitness industry.</p>
+    <hr class="my-4">
+    <p>Manage gyms, members, payments, classes, and more with our powerful platform.</p>
+    
+    {% if not user.is_authenticated %}
+    <div class="mt-4">
+        <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">
+            <i class="fas fa-user-plus"></i> Register Now
+        </a>
+        <a class="btn btn-outline-secondary btn-lg" href="{% url 'login' %}" role="button">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-dumbbell fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Gym Management</h5>
+                <p class="card-text">Manage multiple gym locations, equipment, and staff efficiently.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Member Management</h5>
+                <p class="card-text">Digital membership, QR check-ins, and progress tracking.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-money-bill-wave fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Payment System</h5>
+                <p class="card-text">Mobile Money integration, automated billing, and receipts.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
