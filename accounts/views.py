@@ -38,7 +38,7 @@ def gym_owner_register_view(request):
     else:
         form = GymOwnerRegistrationForm()
     
-    return render(request, 'accounts/register.html', {'form': form, 'title': 'Register Your Gym'})
+    return render(request, 'accounts/register.html', {'form': form, 'title': 'Register Your Gym', 'is_gym_owner': True})
 
 def profile_view(request):
     """User profile view"""

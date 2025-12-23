@@ -10,6 +10,12 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = UserCreationForm.Meta.fields + ('email', 'phone_number', 'role')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            if not isinstance(self.fields[field].widget, forms.HiddenInput):
+                self.fields[field].widget.attrs.update({'class': 'form-control', 'placeholder': self.fields[field].label})
+
     def save(self, commit=True):
         user = super().save(commit=commit)
         gym_id = self.cleaned_data.get('gym_id')
@@ -25,13 +31,15 @@ class CustomUserCreationForm(UserCreationForm):
 
 class GymOwnerRegistrationForm(CustomUserCreationForm):
     gym_name = forms.CharField(max_length=200, label="Gym Name")
-    gym_address = forms.CharField(widget=forms.Textarea, label="Gym Address")
+    gym_address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), label="Gym Address")
     gym_phone = forms.CharField(max_length=15, label="Gym Contact Phone")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['role'].initial = 'GYM_OWNER'
         self.fields['role'].widget = forms.HiddenInput()
+        # Add classes to gym specific fields as well (already handled by super().__init__ but let's be sure about the textarea rows)
+        self.fields['gym_address'].widget.attrs.update({'rows': 3})
 
     def save(self, commit=True):
         user = super().save(commit=commit)
