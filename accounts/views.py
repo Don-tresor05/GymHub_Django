@@ -12,7 +12,7 @@ def register_view(request):
     gym_id = request.GET.get('gym_id')
     
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -29,7 +29,7 @@ def register_view(request):
 def gym_owner_register_view(request):
     """Specialized Gym Owner registration view"""
     if request.method == 'POST':
-        form = GymOwnerRegistrationForm(request.POST)
+        form = GymOwnerRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             login(request, user)

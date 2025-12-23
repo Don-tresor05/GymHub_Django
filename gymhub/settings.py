@@ -110,6 +110,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom user model
 AUTH_USER_MODEL = 'accounts.User'
 
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailOrPhoneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Login/Logout redirects
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
