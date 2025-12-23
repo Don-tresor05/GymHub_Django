@@ -5,10 +5,26 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h2 class="mb-4">Our Gyms</h2>
-        <div class="alert alert-info">
-            Gym listings are coming soon! Stay tuned.
+        <h2 class="section-title mb-4">Our Partner Gyms</h2>
+    </div>
+    {% for gym in gyms %}
+    <div class="col-md-4 mb-4">
+        <div class="card glass-card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ gym.name }}</h5>
+                <p class="text-muted small"><i class="fas fa-map-marker-alt me-2"></i>{{ gym.address|truncatechars:50 }}
+                </p>
+                <p class="card-text">{{ gym.description|truncatechars:100 }}</p>
+                <a href="{% url 'gym_detail' gym.pk %}" class="btn btn-outline-primary btn-sm">View Details</a>
+            </div>
         </div>
     </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            More gyms are joining GymHub everyday. Check back soon!
+        </div>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ gym.name }} - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'gym_list' %}">Gyms</a></li>
+        <li class="breadcrumb-item active text-truncate" style="max-width: 200px;">{{ gym.name }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card glass-card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h1 class="display-5 fw-bold mb-3">{{ gym.name }}</h1>
+                <p class="lead text-primary mb-4">{{ gym.location }}</p>
+
+                <h4 class="section-title h5">About this Gym</h4>
+                <p class="text-muted mb-4">{{ gym.description|linebreaks }}</p>
+
+                <h4 class="section-title h5">Location & Contact</h4>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-map-pin text-primary me-3"></i> {{ gym.address }}</li>
+                    <li class="mb-2"><i class="fas fa-phone text-primary me-3"></i> {{ gym.contact_phone }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-lg border-primary">
+            <div class="card-body p-4 text-center">
+                <h3 class="mb-3">Ready to Join?</h3>
+                <p class="text-muted mb-4">Become a member of <strong>{{ gym.name }}</strong> today and start your
+                    fitness journey.</p>
+
+                {% if user.is_authenticated %}
+                {% if user.role == 'MEMBER' %}
+                <form method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="gym_id" value="{{ gym.pk }}">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 py-3 shadow">Join This Gym</button>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    You are logged in as a {{ user.get_role_display }}. Only members can join gyms.
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="d-grid gap-3">
+                    <a href="{% url 'register' %}?gym_id={{ gym.pk }}" class="btn btn-primary btn-lg py-3 shadow">
+                        Sign Up to Join
+                    </a>
+                    <p class="small text-muted mb-0">Already have an account?</p>
+                    <a href="{% url 'login' %}?next={% url 'gym_detail' gym.pk %}"
+                        class="btn btn-outline-secondary">Login First</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
