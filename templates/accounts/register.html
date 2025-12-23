@@ -12,7 +12,7 @@
                 <p class="mb-0 opacity-75">Fill in the details below to get started with GymHub Rwanda.</p>
             </div>
             <div class="card-body p-4 p-md-5">
-                <form method="post" class="needs-validation" novalidate>
+                <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                     {% csrf_token %}
 
                     {% if is_gym_owner %}
@@ -22,7 +22,7 @@
                             <h5 class="section-title h6 mb-4 text-primary fw-bold text-uppercase"
                                 style="letter-spacing: 1px;">1. Account Details</h5>
                             {% for field in form %}
-                            {% if field.name not in "gym_name,gym_address,gym_phone,gym_id,role" %}
+                            {% if field.name not in "gym_name,gym_address,gym_phone,gym_image,gym_id,role" %}
                             <div class="mb-3">
                                 <label for="{{ field.id_for_label }}" class="form-label small fw-bold text-secondary">
                                     {{ field.label }}
@@ -32,10 +32,6 @@
                                 <div class="text-danger smaller mt-1">
                                     {% for error in field.errors %}{{ error }}{% endfor %}
                                 </div>
-                                {% endif %}
-                                {% if field.help_text and not "password" in field.name %}
-                                <small class="form-text text-muted smaller d-block mt-1">{{ field.help_text|safe
-                                    }}</small>
                                 {% endif %}
                             </div>
                             {% endif %}
@@ -50,7 +46,7 @@
                             <h5 class="section-title h6 mb-4 text-primary fw-bold text-uppercase"
                                 style="letter-spacing: 1px;">2. Gym Profile</h5>
                             {% for field in form %}
-                            {% if field.name in "gym_name,gym_address,gym_phone" %}
+                            {% if field.name in "gym_name,gym_address,gym_phone,gym_image" %}
                             <div class="mb-3">
                                 <label for="{{ field.id_for_label }}" class="form-label small fw-bold text-secondary">
                                     {{ field.label }}
@@ -91,10 +87,6 @@
                                 <div class="text-danger smaller mt-1">
                                     {% for error in field.errors %}{{ error }}{% endfor %}
                                 </div>
-                                {% endif %}
-                                {% if field.help_text and not "password" in field.name %}
-                                <small class="form-text text-muted smaller d-block mt-1">{{ field.help_text|safe
-                                    }}</small>
                                 {% endif %}
                             </div>
                             {% else %}

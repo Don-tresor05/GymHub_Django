@@ -33,6 +33,7 @@ class GymOwnerRegistrationForm(CustomUserCreationForm):
     gym_name = forms.CharField(max_length=200, label="Gym Name")
     gym_address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), label="Gym Address")
     gym_phone = forms.CharField(max_length=15, label="Gym Contact Phone")
+    gym_image = forms.ImageField(required=False, label="Gym Logo/Image")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -50,6 +51,7 @@ class GymOwnerRegistrationForm(CustomUserCreationForm):
                 name=self.cleaned_data['gym_name'],
                 address=self.cleaned_data['gym_address'],
                 contact_phone=self.cleaned_data['gym_phone'],
+                image=self.cleaned_data.get('gym_image'),
                 owner=user
             )
         return user
