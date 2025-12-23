@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card glass-card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="feature-icon-wrap me-4">
+                        <i class="fas fa-user fa-3x"></i>
+                    </div>
+                    <div>
+                        <h2 class="mb-0">{{ user.username }}</h2>
+                        <span class="badge bg-primary role-badge">{{ user.get_role_display }}</span>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small d-block">Full Name</label>
+                        <p class="fw-bold mb-0">{{ user.get_full_name|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small d-block">Email Address</label>
+                        <p class="fw-bold mb-0">{{ user.email|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small d-block">Phone Number</label>
+                        <p class="fw-bold mb-0">{{ user.phone_number|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small d-block">Member Since</label>
+                        <p class="fw-bold mb-0">{{ user.date_joined|date:"F Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user.role == 'MEMBER' %}
+        <div class="card glass-card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">My Gym Memberships</h5>
+            </div>
+            <div class="card-body">
+                {% if user.memberships.all %}
+                <ul class="list-group list-group-flush">
+                    {% for membership in user.memberships.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                        <div>
+                            <h6 class="mb-0">{{ membership.gym.name }}</h6>
+                            <small class="text-muted">Joined on {{ membership.joined_at|date:"M d, Y" }}</small>
+                        </div>
+                        <span class="badge bg-success rounded-pill">{{ membership.tier }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted mb-0 text-center py-3">You hasn't joined any gyms yet. <a
+                        href="{% url 'gym_list' %}">Browse gyms here</a>.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% elif user.role == 'GYM_OWNER' %}
+        <div class="card glass-card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">My Gyms</h5>
+            </div>
+            <div class="card-body">
+                {% if user.gyms.all %}
+                <ul class="list-group list-group-flush">
+                    {% for gym in user.gyms.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                        <div>
+                            <h6 class="mb-0">{{ gym.name }}</h6>
+                            <small class="text-muted">{{ gym.address|truncatechars:50 }}</small>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Manage</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted mb-0 text-center py-3">You haven't registered any gyms yet. <a
+                        href="{% url 'gym_owner_register' %}">Register your gym here</a>.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
