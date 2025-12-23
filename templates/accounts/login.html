@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Login - GymHub Rwanda{% endblock %}
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-5 col-md-8">
+        <div class="card glass-card shadow-lg border-0 overflow-hidden">
+            <div class="card-header bg-primary text-white p-4 text-center">
+                <i class="fas fa-lock fa-3x mb-3"></i>
+                <h3 class="mb-0 fw-bold">Welcome Back</h3>
+                <p class="mb-0 opacity-75">Login to access your GymHub account.</p>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label small fw-bold text-secondary">Phone, Email or
+                            Username</label>
+                        <input type="text" name="username" class="form-control" id="id_username"
+                            placeholder="Enter your credentials" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label small fw-bold text-secondary">Password</label>
+                        <input type="password" name="password" class="form-control" id="id_password"
+                            placeholder="••••••••" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm py-3 fw-bold">
+                            <i class="fas fa-sign-in-alt me-2"></i> Sign In
+                        </button>
+                    </div>
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger mt-4 smaller py-2 text-center" role="alert">
+                        <i class="fas fa-exclamation-circle me-1"></i> Invalid credentials. Please try again.
+                    </div>
+                    {% endif %}
+                </form>
+
+                <hr class="my-5 opacity-25">
+
+                <p class="text-center text-muted mb-0">
+                    Don't have an account?
+                    <a href="{% url 'register' %}" class="fw-bold text-primary text-decoration-none">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    input.form-control {
+        border: 1.5px solid #eef2f6;
+        padding: 0.75rem 1rem;
+        transition: all 0.2s;
+    }
+
+    input.form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.1);
+        background: #fff;
+    }
+
+    .smaller {
+        font-size: 0.85rem;
+    }
+
+    .card-header i {
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Revolutionizing Fitness - GymHub Rwanda{% endblock %}
+
+{% block content %}
+</div> <!-- Close container to go full width for hero -->
+
+<section class="hero-section">
+    <div class="container text-center py-5">
+        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInUp">Revolutionizing Fitness Management in
+            Rwanda</h1>
+        <p class="lead mb-5 opacity-75">A comprehensive all-in-one platform for gym owners, trainers, and members.
+            Locally optimized with Mobile Money, Kinyarwanda support, and more.</p>
+
+        {% if not user.is_authenticated %}
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg shadow">Join as Member</a>
+            <a href="{% url 'gym_owner_register' %}" class="btn btn-outline-light btn-lg">Register Your Gym</a>
+        </div>
+        {% else %}
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'profile' %}" class="btn btn-primary btn-lg px-5">Go to Dashboard</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<div class="container"> <!-- Reopen container for the rest of the content -->
+
+    <section id="features" class="py-5">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Comprehensive Features</h2>
+            <p class="text-muted">Everything you need to run a modern fitness center in Rwanda.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Gym Management -->
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-3">
+                    <div class="feature-icon-wrap">
+                        <i class="fas fa-building fa-2x"></i>
+                    </div>
+                    <h5>Gym & Branch Management</h5>
+                    <p class="text-muted small">Manage multiple locations, operating hours, and equipment maintenance
+                        from a single dashboard.</p>
+                </div>
+            </div>
+
+            <!-- Member Management -->
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-3">
+                    <div class="feature-icon-wrap">
+                        <i class="fas fa-id-card fa-2x"></i>
+                    </div>
+                    <h5>Member Tier System</h5>
+                    <p class="text-muted small">Basic, Premium, and Corporate tiers with digital QR-based IDs for easy
+                        check-ins.</p>
+                </div>
+            </div>
+
+            <!-- Payments -->
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-3">
+                    <div class="feature-icon-wrap">
+                        <i class="fas fa-mobile-alt fa-2x"></i>
+                    </div>
+                    <h5>Momo & Cash Tracking</h5>
+                    <p class="text-muted small">Integrated with MTN and Airtel Mobile Money for seamless local payments
+                        and automated billing.</p>
+                </div>
+            </div>
+
+            <!-- Classes -->
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-3">
+                    <div class="feature-icon-wrap">
+                        <i class="fas fa-calendar-alt fa-2x"></i>
+                    </div>
+                    <h5>Class Scheduling</h5>
+                    <p class="text-muted small">Online booking for yoga, aerobics, and even traditional dance classes
+                        with capacity limits.</p>
+                </div>
+            </div>
+
+            <!-- Attendance -->
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-3">
+                    <div class="feature-icon-wrap">
+                        <i class="fas fa-qrcode fa-2x"></i>
+                    </div>
+                    <h5>QR Attendance System</h5>
+                    <p class="text-muted small">Quick check-in/out for members and real-time monitoring of peak gym
+                        hours.</p>
+                </div>
+            </div>
+
+            <!-- Analytics -->
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-3">
+                    <div class="feature-icon-wrap">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h5>Reporting & Analytics</h5>
+                    <p class="text-muted small">In-depth reports on revenue, member retention, and class popularity to
+                        grow your business.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white rounded-4 my-5 px-4">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="section-title">Built for Rwanda</h2>
+                <p class="lead text-primary fw-bold">Localized for the Rwandan Fitness Industry</p>
+                <ul class="list-unstyled space-y-3">
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-3"></i>
+                        <span><strong>Phone-based Registration:</strong> Standard +250 format.</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-3"></i>
+                        <span><strong>Multi-language Support:</strong> English, Kinyarwanda, and French.</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-3"></i>
+                        <span><strong>Rwandan Holidays:</strong> Auto-detection and schedule adjustment.</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-3"></i>
+                        <span><strong>Cultural Categories:</strong> Support for traditional dance workouts.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <div class="bg-light p-5 rounded-4 border">
+                    <div class="text-center mb-4">
+                        <span class="badge bg-primary role-badge mb-2">OWNERS</span>
+                        <span class="badge bg-success role-badge mb-2 mx-1">TRAINERS</span>
+                        <span class="badge bg-warning text-dark role-badge mb-2">MEMBERS</span>
+                    </div>
+                    <h4 class="text-center">A Role for Everyone</h4>
+                    <p class="text-center text-muted">Whether you're managing a nationwide chain of gyms or just
+                        starting your fitness journey, GymHub has you covered.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 text-center bg-dark text-white rounded-4 mb-5 shadow-lg">
+        <div class="py-4">
+            <h2 class="display-5 fw-bold mb-3">Ready to transform your gym?</h2>
+            <p class="opacity-75 mb-5 mx-auto" style="max-width: 600px;">Join the growing community of Rwandan fitness
+                professionals using GymHub to streamline their operations.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4">Join as Member</a>
+                <a href="{% url 'gym_owner_register' %}" class="btn btn-outline-light btn-lg px-4">Register Your Gym</a>
+            </div>
+        </div>
+    </section>
+    {% endblock %}
