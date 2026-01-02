@@ -74,6 +74,13 @@
                     <!-- Standard Member Registration -->
                     <div class="row justify-content-center">
                         <div class="col-md-10">
+                            {% if gym_id %}
+                            <div class="alert alert-info mb-4 text-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>You're joining a gym!</strong> After registration, you'll be automatically enrolled.
+                            </div>
+                            {% endif %}
+                            
                             <h5 class="section-title h6 mb-4 text-primary fw-bold text-uppercase text-center"
                                 style="letter-spacing: 1px;">Member Account Information</h5>
                             {% for field in form %}

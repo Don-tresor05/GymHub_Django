@@ -3,6 +3,18 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User
 from gyms.models import Gym
 
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+250780000000'}),
+        }
+
 class CustomUserCreationForm(UserCreationForm):
     gym_id = forms.IntegerField(required=False, widget=forms.HiddenInput())
 
@@ -12,6 +24,10 @@ class CustomUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Set default role to MEMBER and hide it
+        self.fields['role'].initial = 'MEMBER'
+        self.fields['role'].widget = forms.HiddenInput()
+        
         for field in self.fields:
             if not isinstance(self.fields[field].widget, forms.HiddenInput):
                 self.fields[field].widget.attrs.update({'class': 'form-control', 'placeholder': self.fields[field].label})
