@@ -85,9 +85,10 @@
                                 style="letter-spacing: 1px;">Member Account Information</h5>
                             {% for field in form %}
                             {% if not field.is_hidden %}
-                            <div class="mb-3">
+                            <div class="mb-3 {% if field.name == 'membership_plan' %}membership-plan-field{% endif %}">
                                 <label for="{{ field.id_for_label }}" class="form-label small fw-bold text-secondary">
                                     {{ field.label }}
+                                    {% if field.name == 'membership_plan' %}<span class="text-muted">(Optional)</span>{% endif %}
                                 </label>
                                 {{ field }}
                                 {% if field.errors %}
@@ -95,7 +96,13 @@
                                     {% for error in field.errors %}{{ error }}{% endfor %}
                                 </div>
                                 {% endif %}
+                                {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                                {% endif %}
                             </div>
+                            {% if field.name == 'membership_plan' %}
+                            <div id="membership_plan_info" class="d-none"></div>
+                            {% endif %}
                             {% else %}
                             {{ field }}
                             {% endif %}
@@ -198,5 +205,84 @@
         box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.1);
         background: #fff;
     }
+    
+    #membership_plan_info {
+        transition: all 0.3s ease;
+    }
 </style>
+
+{% block extra_js %}
+<script>
+    // Dynamic membership plan loading
+    document.addEventListener('DOMContentLoaded', function() {
+        const gymSelect = document.getElementById('id_gym');
+        const planSelect = document.getElementById('id_membership_plan');
+        const planInfoDiv = document.getElementById('membership_plan_info');
+        
+        if (gymSelect && planSelect) {
+            gymSelect.addEventListener('change', function() {
+                const gymId = this.value;
+                
+                if (gymId) {
+                    // Fetch membership plans for selected gym
+                    fetch(`/accounts/api/membership-plans/${gymId}/`)
+                        .then(response => response.json())
+                        .then(plans => {
+                            // Clear existing options except the first one
+                            planSelect.innerHTML = '<option value="">Select Membership Plan (Optional)</option>';
+                            
+                            // Add new options
+                            plans.forEach(plan => {
+                                const option = document.createElement('option');
+                                option.value = plan.id;
+                                option.textContent = `${plan.name} - ${plan.price} RWF (${plan.duration_days} days)`;
+                                option.dataset.price = plan.price;
+                                option.dataset.duration = plan.duration_days;
+                                option.dataset.description = plan.description;
+                                planSelect.appendChild(option);
+                            });
+                            
+                            // Enable the select if there are plans
+                            if (plans.length > 0) {
+                                planSelect.disabled = false;
+                                planSelect.parentElement.classList.remove('d-none');
+                            } else {
+                                planSelect.disabled = true;
+                                planSelect.parentElement.classList.add('d-none');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading membership plans:', error);
+                        });
+                } else {
+                    // Reset plan select if no gym selected
+                    planSelect.innerHTML = '<option value="">Select a gym first</option>';
+                    planSelect.disabled = true;
+                }
+            });
+            
+            // Show plan details when selected
+            planSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                
+                if (this.value && planInfoDiv) {
+                    const price = selectedOption.dataset.price;
+                    const duration = selectedOption.dataset.duration;
+                    const description = selectedOption.dataset.description;
+                    
+                    planInfoDiv.innerHTML = `
+                        <div class="alert alert-info mt-2">
+                            <strong>Selected Plan:</strong> ${selectedOption.text}<br>
+                            ${description ? `<small>${description}</small>` : ''}
+                        </div>
+                    `;
+                    planInfoDiv.classList.remove('d-none');
+                } else if (planInfoDiv) {
+                    planInfoDiv.classList.add('d-none');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
 {% endblock %}
