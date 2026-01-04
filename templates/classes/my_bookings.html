@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4"><i class="fas fa-calendar-check me-2"></i>{{ title }}</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Upcoming Bookings -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Upcoming Classes ({{ upcoming_bookings.count }})</h4>
+        </div>
+        <div class="card-body">
+            {% if upcoming_bookings %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Gym</th>
+                                <th>Date & Time</th>
+                                <th>Trainer</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in upcoming_bookings %}
+                            <tr>
+                                <td><strong>{{ booking.gym_class.name }}</strong></td>
+                                <td>{{ booking.gym_class.gym.name }}</td>
+                                <td>
+                                    {{ booking.gym_class.start_time|date:"M d, Y" }}<br>
+                                    <small class="text-muted">{{ booking.gym_class.start_time|time:"H:i" }} - {{ booking.gym_class.end_time|time:"H:i" }}</small>
+                                </td>
+                                <td>{{ booking.gym_class.trainer.username|default:"TBA" }}</td>
+                                <td><span class="badge bg-success">{{ booking.get_status_display }}</span></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'class_detail' booking.gym_class.pk %}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <form method="post" action="{% url 'cancel_booking' booking.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Cancel this booking?');">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center mb-0">No upcoming class bookings.</p>
+                <div class="text-center mt-3">
+                    <a href="{% url 'class_list' %}" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Browse Classes
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Waitlist -->
+    {% if waitlist %}
+    <div class="card mb-4">
+        <div class="card-header bg-warning">
+            <h4 class="mb-0"><i class="fas fa-clock me-2"></i>Waitlist ({{ waitlist.count }})</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Gym</th>
+                            <th>Date & Time</th>
+                            <th>Joined Waitlist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in waitlist %}
+                        <tr>
+                            <td><strong>{{ entry.gym_class.name }}</strong></td>
+                            <td>{{ entry.gym_class.gym.name }}</td>
+                            <td>{{ entry.gym_class.start_time|date:"M d, Y H:i" }}</td>
+                            <td>{{ entry.joined_at|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Past Bookings -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0"><i class="fas fa-history me-2"></i>Past Classes</h4>
+        </div>
+        <div class="card-body">
+            {% if past_bookings %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Gym</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in past_bookings %}
+                            <tr>
+                                <td>{{ booking.gym_class.name }}</td>
+                                <td>{{ booking.gym_class.gym.name }}</td>
+                                <td>{{ booking.gym_class.start_time|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if booking.status == 'ATTENDED' %}
+                                        <span class="badge bg-success">Attended</span>
+                                    {% elif booking.status == 'NO_SHOW' %}
+                                        <span class="badge bg-danger">No Show</span>
+                                    {% elif booking.status == 'CANCELLED' %}
+                                        <span class="badge bg-secondary">Cancelled</span>
+                                    {% else %}
+                                        <span class="badge bg-primary">{{ booking.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center mb-0">No past classes.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

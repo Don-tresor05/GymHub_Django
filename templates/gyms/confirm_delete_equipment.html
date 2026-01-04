@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Delete - {{ gym.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion</h4>
+                </div>
+                <div class="card-body">
+                    <p>Are you sure you want to delete the following equipment?</p>
+                    <div class="alert alert-info">
+                        <h5><strong>{{ equipment.name }}</strong></h5>
+                        <p class="mb-1">Brand: {{ equipment.brand|default:"N/A" }}</p>
+                        <p class="mb-0">Status: {{ equipment.get_status_display }}</p>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> This action cannot be undone!
+                    </div>
+                    
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'manage_equipment' gym.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Yes, Delete Equipment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

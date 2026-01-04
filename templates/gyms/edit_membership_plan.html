@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Membership Plan - {{ gym.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'gym_owner_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'gym_detail_owner' gym.pk %}">{{ gym.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'manage_membership_plans' gym.pk %}">Membership Plans</a></li>
+                <li class="breadcrumb-item active">Edit {{ plan.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-edit"></i> Edit Membership Plan</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Plan Name *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger small">{{ form.name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.tier.id_for_label }}" class="form-label">Tier *</label>
+                            {{ form.tier }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.duration.id_for_label }}" class="form-label">Duration *</label>
+                            {{ form.duration }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.price.id_for_label }}" class="form-label">Price (RWF) *</label>
+                            {{ form.price }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.duration_days.id_for_label }}" class="form-label">Duration (Days) *</label>
+                            {{ form.duration_days }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.max_family_members.id_for_label }}" class="form-label">Max Family Members</label>
+                        {{ form.max_family_members }}
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                            Active (Available for purchase)
+                        </label>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <a href="{% url 'manage_membership_plans' gym.pk %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
