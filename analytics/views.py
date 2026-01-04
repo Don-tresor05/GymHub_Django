@@ -370,8 +370,11 @@ def member_dashboard(request):
     # Get gym
     if is_owner:
         gym = Gym.objects.filter(owner=request.user).first()
-    else:
+    elif request.user.role == 'STAFF' and staff_assignment:
         gym = staff_assignment.gym
+    else:
+        messages.error(request, 'You do not have permission to view analytics.')
+        return redirect('home')
     
     if not gym:
         messages.error(request, 'No gym found.')
