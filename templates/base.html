@@ -21,56 +21,113 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-dumbbell"></i> GymHub Rwanda
-            </a>
+            {% if user.is_authenticated %}
+                {% if user.role == 'GYM_OWNER' %}
+                    <a class="navbar-brand" href="{% url 'gym_owner_dashboard' %}">
+                        <i class="fas fa-dumbbell"></i> GymHub Rwanda
+                    </a>
+                {% elif user.role == 'STAFF' %}
+                    <a class="navbar-brand" href="{% url 'staff_dashboard' %}">
+                        <i class="fas fa-dumbbell"></i> GymHub Rwanda
+                    </a>
+                {% else %}
+                    <a class="navbar-brand" href="{% url 'member_dashboard' %}">
+                        <i class="fas fa-dumbbell"></i> GymHub Rwanda
+                    </a>
+                {% endif %}
+            {% else %}
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <i class="fas fa-dumbbell"></i> GymHub Rwanda
+                </a>
+            {% endif %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'gym_list' %}">Gyms</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'class_list' %}">Classes</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown">
-                            <i class="fas fa-user"></i> {{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            {% if user.role == 'GYM_OWNER' %}
-                            <li><a class="dropdown-item fw-bold text-primary" href="{% url 'gym_owner_dashboard' %}"><i
-                                        class="fas fa-th-large me-2"></i>Dashboard</a></li>
-                            {% elif user.role == 'TRAINER' %}
-                            <li><a class="dropdown-item fw-bold text-primary" href="#"><i
-                                        class="fas fa-th-large me-2"></i>Trainer Panel</a></li>
-                            {% endif %}
-                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <form method="post" action="{% url 'logout' %}" class="px-0 py-0">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
+                    {% if not user.is_authenticated %}
+                        <!-- Public Navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'gym_list' %}">Browse Gyms</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary text-white ms-2" href="{% url 'register' %}">Join Now</a>
+                        </li>
+                    {% elif user.role == 'GYM_OWNER' %}
+                        <!-- Gym Owner Navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'gym_owner_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'staff_approvals' %}"><i class="fas fa-user-check"></i> Pending Approvals</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% elif user.role == 'STAFF' %}
+                        <!-- Staff Navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'staff_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Register</a>
-                    </li>
+                        <!-- Member/Trainer Navigation -->
+                        <li class="nav-item">
+                            {% if user.role == 'MEMBER' %}
+                            <a class="nav-link" href="{% url 'member_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+                            {% elif user.role == 'TRAINER' %}
+                            <a class="nav-link" href="{% url 'trainer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+                            {% else %}
+                            <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-home"></i> Dashboard</a>
+                            {% endif %}
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user-circle me-2"></i>My Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
                     {% endif %}
                 </ul>
             </div>

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Remove Staff - {{ gym.name }} - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'gym_detail_owner' gym.pk %}">{{ gym.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'gym_staff_management' gym.pk %}">Staff</a></li>
+                <li class="breadcrumb-item active">Remove Staff</li>
+            </ol>
+        </nav>
+
+        <div class="card glass-card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Removal</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Warning:</strong> This action will remove this staff member's access to your gym.
+                </div>
+
+                <div class="mb-4">
+                    <h5>Staff Member Details:</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Name:</strong> {{ staff.user.get_full_name|default:staff.user.username }}</li>
+                        <li><strong>Username:</strong> @{{ staff.user.username }}</li>
+                        <li><strong>Email:</strong> {{ staff.user.email }}</li>
+                        <li><strong>Role:</strong> <span class="badge bg-info">{{ staff.get_role_display }}</span></li>
+                    </ul>
+                </div>
+
+                <p class="text-muted">
+                    <strong>Note:</strong> The user's account will remain active, but they will no longer have access to {{ gym.name }}.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'gym_staff_management' gym.pk %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-2"></i>Yes, Remove Staff Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

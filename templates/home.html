@@ -147,6 +147,53 @@
         </div>
     </section>
 
+    <!-- Available Gyms Section -->
+    {% if gyms %}
+    <section id="gyms" class="py-5">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Join a Gym Near You</h2>
+            <p class="text-muted">Select from our registered gyms and start your fitness journey today</p>
+        </div>
+
+        <div class="row g-4">
+            {% for gym in gyms %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm hover-lift">
+                    {% if gym.image %}
+                    <img src="{{ gym.image.url }}" class="card-img-top" alt="{{ gym.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-dumbbell fa-3x"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ gym.name }}</h5>
+                        <p class="card-text text-muted small">
+                            <i class="fas fa-map-marker-alt"></i> {{ gym.address|truncatewords:10 }}
+                        </p>
+                        <p class="card-text text-muted small">
+                            <i class="fas fa-phone"></i> {{ gym.contact_phone }}
+                        </p>
+
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a href="{% url 'gym_detail' gym.pk %}" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="fas fa-info-circle"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'gym_list' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-search"></i> Browse All Gyms
+            </a>
+        </div>
+    </section>
+    {% endif %}
+
     <section class="py-5 text-center bg-dark text-white rounded-4 mb-5 shadow-lg">
         <div class="py-4">
             <h2 class="display-5 fw-bold mb-3">Ready to transform your gym?</h2>

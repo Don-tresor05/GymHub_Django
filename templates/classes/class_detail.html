@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Classes</a></li>
+            <li class="breadcrumb-item active">{{ gym_class.name }}</li>
+        </ol>
+    </nav>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">{{ gym_class.name }}</h2>
+                    <span class="badge bg-light text-dark">{{ gym_class.get_class_type_display }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-building text-primary me-2"></i>Gym</h5>
+                            <p>{{ gym_class.gym.name }}</p>
+                            <p class="text-muted small">{{ gym_class.gym.address }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-calendar text-primary me-2"></i>Schedule</h5>
+                            <p><strong>{{ gym_class.start_time|date:"l, F d, Y" }}</strong></p>
+                            <p>
+                              {{ gym_class.start_time|time:"H:i" }}{% if gym_class.end_time and gym_class.end_time != gym_class.start_time %} - {{ gym_class.end_time|time:"H:i" }}{% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if gym_class.trainer %}
+                    <div class="mb-4">
+                        <h5><i class="fas fa-user text-primary me-2"></i>Trainer</h5>
+                        <p>{{ gym_class.trainer.get_full_name|default:gym_class.trainer.username }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if gym_class.description %}
+                    <div class="mb-4">
+                        <h5><i class="fas fa-info-circle text-primary me-2"></i>Description</h5>
+                        <p>{{ gym_class.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-users text-primary me-2"></i>Capacity</h5>
+                        <div class="progress mb-2" style="height: 30px;">
+                            {% widthratio gym_class.get_enrolled_count gym_class.capacity 100 as percent %}
+                            <div class="progress-bar {% if percent >= 90 %}bg-danger{% elif percent >= 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                                 role="progressbar" 
+                                 data-percent="{{ percent }}"
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ gym_class.get_enrolled_count }} / {{ gym_class.capacity }}
+                            </div>
+                        </div>
+                        <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const progressBar = document.querySelector('.progress-bar');
+                            const percent = progressBar.dataset.percent;
+                            progressBar.style.width = percent + '%';
+                            progressBar.setAttribute('aria-valuenow', percent);
+                        });
+                        </script>
+                        <p class="text-muted">{{ gym_class.get_available_spots }} spots remaining</p>
+                    </div>
+
+                    {% if user.is_authenticated and user.role == 'TRAINER' and gym_class.trainer == user %}
+                    <div class="mb-4">
+                        <h5><i class="fas fa-users me-2"></i>Enrolled Members</h5>
+                        {% if enrolled_members %}
+                        <ul class="list-group">
+                          {% for b in enrolled_members %}
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ b.member.get_full_name|default:b.member.username }}</span>
+                            <span class="badge bg-success">{{ b.get_status_display }}</span>
+                          </li>
+                          {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-muted mb-0">No confirmed bookings yet.</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Booking</h5>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated and user.role == 'MEMBER' %}
+                        {% if user_booking %}
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i>You are booked for this class!
+                            </div>
+                            <p><strong>Status:</strong> <span class="badge bg-success">{{ user_booking.get_status_display }}</span></p>
+                            <p><strong>Booked on:</strong> {{ user_booking.booked_at|date:"M d, Y H:i" }}</p>
+                            <form method="post" action="{% url 'cancel_booking' user_booking.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to cancel this booking?');">
+                                    <i class="fas fa-times me-2"></i>Cancel Booking
+                                </button>
+                            </form>
+                        {% elif user_in_waitlist %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-clock me-2"></i>You are on the waitlist for this class.
+                            </div>
+                            <p class="text-muted small">You will be notified if a spot becomes available.</p>
+                        {% elif can_book %}
+                            {% if gym_class.is_full %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>This class is full.
+                                </div>
+                                <a href="{% url 'book_class' gym_class.pk %}" class="btn btn-warning w-100">
+                                    <i class="fas fa-list me-2"></i>Join Waitlist
+                                </a>
+                            {% else %}
+                                <a href="{% url 'book_class' gym_class.pk %}" class="btn btn-success w-100">
+                                    <i class="fas fa-check me-2"></i>Book This Class
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>You must be a member of {{ gym_class.gym.name }} to book this class.
+                            </div>
+                            <a href="{% url 'gym_detail' gym_class.gym.pk %}" class="btn btn-primary w-100">
+                                <i class="fas fa-building me-2"></i>Join {{ gym_class.gym.name }}
+                            </a>
+                        {% endif %}
+                    {% elif user.is_authenticated %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle me-2"></i>Only members can book classes.
+                        </div>
+                    {% else %}
+                        {% if user.is_authenticated %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>Booking is available to members only.
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-sign-in-alt me-2"></i>Please login to book this class.
+                        </div>
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                        {% endif %}
+                    {% endif %}
+
+                    <hr>
+
+                    <a href="{% url 'class_list' %}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Classes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

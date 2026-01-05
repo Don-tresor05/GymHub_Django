@@ -85,8 +85,19 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.opening_time.id_for_label }}" class="form-label">Opening Time</label>
+                            {{ form.opening_time }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.closing_time.id_for_label }}" class="form-label">Closing Time</label>
+                            {{ form.closing_time }}
+                        </div>
+                    </div>
+
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{% url 'gym_detail_owner' gym.pk %}" class="btn btn-outline-secondary">
+                        <a href="{% url 'gym_detail' gym.pk %}" class="btn btn-outline-secondary">
                             <i class="fas fa-times me-2"></i>Cancel
                         </a>
                         <button type="submit" class="btn btn-primary">

@@ -74,7 +74,7 @@
                 </table>
             </div>
             <div class="text-end mt-3">
-                <a href="#" class="btn btn-outline-primary btn-sm px-4 rounded-pill fw-bold">Manage All Classes</a>
+                <a href="{% url 'manage_classes' %}" class="btn btn-outline-primary btn-sm px-4 rounded-pill fw-bold">Manage All Classes</a>
             </div>
         </div>
     </div>
@@ -82,16 +82,38 @@
     <!-- Sidebar Info -->
     <div class="col-lg-4">
         <div class="card glass-card border-0 shadow-sm p-4 mb-4">
+            <h5 class="fw-bold mb-4">My Gyms</h5>
+            {% for gym in gyms %}
+            <div class="card mb-3 border">
+                <div class="card-body p-3">
+                    <h6 class="mb-2"><strong>{{ gym.name }}</strong></h6>
+                    <div class="d-grid gap-1">
+                        <a href="{% url 'gym_detail_owner' gym.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-cog"></i> Manage
+                        </a>
+                        <a href="{% url 'manage_membership_plans' gym.pk %}" class="btn btn-sm btn-outline-success">
+                            <i class="fas fa-ticket-alt"></i> Membership Plans
+                        </a>
+                        <a href="{% url 'gym_staff_management' gym.pk %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-users"></i> Staff
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card glass-card border-0 shadow-sm p-4 mb-4">
             <h5 class="fw-bold mb-4">Quick Actions</h5>
             <div class="d-grid gap-2">
-                <a href="#" class="btn btn-primary text-start shadow-sm py-2 px-3 fw-bold">
-                    <i class="fas fa-plus-circle me-2"></i> Add New Branch
+                <a href="{% url 'revenue_dashboard' %}" class="btn btn-success text-start shadow-sm py-2 px-3 fw-bold">
+                    <i class="fas fa-chart-line me-2"></i> Revenue Analytics
                 </a>
-                <a href="#" class="btn btn-dark text-start shadow-sm py-2 px-3 fw-bold">
-                    <i class="fas fa-calendar-plus me-2"></i> Schedule a Class
+                <a href="{% url 'attendance_dashboard' %}" class="btn btn-info text-start shadow-sm py-2 px-3 fw-bold">
+                    <i class="fas fa-user-check me-2"></i> Attendance Analytics
                 </a>
-                <a href="#" class="btn btn-light border text-start py-2 px-3 fw-bold">
-                    <i class="fas fa-user-plus me-2"></i> Invite Staff
+                <a href="{% url 'member_dashboard' %}" class="btn btn-primary text-start shadow-sm py-2 px-3 fw-bold">
+                    <i class="fas fa-users me-2"></i> Member Analytics
                 </a>
             </div>
         </div>
