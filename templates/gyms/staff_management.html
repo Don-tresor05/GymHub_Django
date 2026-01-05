@@ -250,15 +250,15 @@
             <div class="card-body">
                 <div class="row text-center">
                     <div class="col-md-4">
-                        <h4 class="text-primary mb-0">{{ staff_members|length }}</h4>
+                        <h4 class="text-primary mb-0">{{ total_staff }}</h4>
                         <small class="text-muted">Total Staff</small>
                     </div>
                     <div class="col-md-4">
-                        <h4 class="text-success mb-0">{% for s in staff_members %}{% if s.user.is_active %}1{% endif %}{% endfor %}</h4>
+                        <h4 class="text-success mb-0">{{ active_staff_count }}</h4>
                         <small class="text-muted">Active</small>
                     </div>
                     <div class="col-md-4">
-                        <h4 class="text-info mb-0">{% for s in staff_members %}{% if s.role == 'TRAINER' %}1{% endif %}{% endfor %}</h4>
+                        <h4 class="text-info mb-0">{{ trainer_count }}</h4>
                         <small class="text-muted">Trainers</small>
                     </div>
                 </div>

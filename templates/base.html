@@ -105,7 +105,13 @@
                     {% else %}
                         <!-- Member/Trainer Navigation -->
                         <li class="nav-item">
+                            {% if user.role == 'MEMBER' %}
                             <a class="nav-link" href="{% url 'member_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+                            {% elif user.role == 'TRAINER' %}
+                            <a class="nav-link" href="{% url 'trainer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+                            {% else %}
+                            <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-home"></i> Dashboard</a>
+                            {% endif %}
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">

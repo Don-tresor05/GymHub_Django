@@ -174,11 +174,7 @@
                         <p class="card-text text-muted small">
                             <i class="fas fa-phone"></i> {{ gym.contact_phone }}
                         </p>
-                        {% if gym.basic_price %}
-                        <p class="mb-2">
-                            <strong>From {{ gym.basic_price|floatformat:0 }} RWF/month</strong>
-                        </p>
-                        {% endif %}
+
                     </div>
                     <div class="card-footer bg-white border-top-0">
                         <a href="{% url 'gym_detail' gym.pk %}" class="btn btn-outline-primary btn-sm w-100">

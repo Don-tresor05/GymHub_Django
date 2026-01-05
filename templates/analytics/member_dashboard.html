@@ -88,7 +88,7 @@
                             <tbody>
                                 {% for plan in members_by_plan %}
                                 <tr>
-                                    <td>{{ plan.plan__name|default:"No Plan" }}</td>
+                                    <td>{{ plan.tier|default:"No Tier" }}</td>
                                     <td><strong>{{ plan.count }}</strong></td>
                                 </tr>
                                 {% endfor %}
@@ -103,12 +103,7 @@
         </div>
     </div>
 
-    <!-- Quick Links -->
-    <div class="text-center mt-4">
-        <a href="{% url 'gym_owner_dashboard' %}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
-        </a>
-    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

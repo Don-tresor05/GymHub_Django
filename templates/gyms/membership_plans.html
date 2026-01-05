@@ -124,6 +124,7 @@
                                     <th>Tier</th>
                                     <th>Duration</th>
                                     <th>Price</th>
+                                    <th>Members Allowed</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -140,6 +141,7 @@
                                     <td><span class="badge bg-info">{{ plan.get_tier_display }}</span></td>
                                     <td>{{ plan.duration_days }} days</td>
                                     <td><strong>{{ plan.price|floatformat:0 }} RWF</strong></td>
+                                    <td>{{ plan.max_family_members }}</td>
                                     <td>
                                         {% if plan.is_active %}
                                             <span class="badge bg-success">Active</span>

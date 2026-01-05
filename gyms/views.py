@@ -19,7 +19,12 @@ def gym_list(request):
 def gym_detail(request, pk):
     """View to show details of a specific gym"""
     gym = get_object_or_404(Gym, pk=pk)
-    return render(request, 'gyms/gym_detail.html', {'gym': gym})
+    from members.models import MembershipPlan
+    from django.utils import timezone
+    from classes.models import GymClass
+    active_plans = MembershipPlan.objects.filter(gym=gym, is_active=True).order_by('price')
+    upcoming_classes = GymClass.objects.filter(gym=gym, is_cancelled=False, start_time__gte=timezone.now()).order_by('start_time')
+    return render(request, 'gyms/gym_detail.html', {'gym': gym, 'active_plans': active_plans, 'upcoming_classes': upcoming_classes})
 
 @login_required
 def gym_owner_dashboard(request):
@@ -118,6 +123,9 @@ def gym_staff_management(request, pk):
         'staff_members': staff_members,
         'form': form,
         'available_users': available_users,
+        'total_staff': staff_members.count(),
+        'active_staff_count': staff_members.filter(is_active=True).count(),
+        'trainer_count': staff_members.filter(role='TRAINER').count(),
     }
     
     return render(request, 'gyms/staff_management.html', context)
@@ -156,7 +164,17 @@ def remove_staff(request, pk, staff_id):
 @login_required
 def manage_membership_plans(request, pk):
     """Manage membership plans for a gym"""
-    gym = get_object_or_404(Gym, pk=pk, owner=request.user)
+    # Allow gym owner or assigned staff to manage plans
+    if request.user.role == 'GYM_OWNER':
+        gym = get_object_or_404(Gym, pk=pk, owner=request.user)
+    elif request.user.role == 'STAFF':
+        from gyms.models import GymStaff
+        assignment = get_object_or_404(GymStaff, gym_id=pk, user=request.user, is_active=True)
+        gym = assignment.gym
+    else:
+        messages.error(request, 'Not authorized to manage membership plans.')
+        return redirect('home')
+    
     plans = MembershipPlan.objects.filter(gym=gym)
     
     if request.method == 'POST':

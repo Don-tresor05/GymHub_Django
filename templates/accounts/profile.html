@@ -82,8 +82,10 @@
                         <div>
                             <h6 class="mb-0">{{ membership.gym.name }}</h6>
                             <small class="text-muted">Joined on {{ membership.joined_at|date:"M d, Y" }}</small>
+                            <div class="mt-1 small text-muted">QR: <code>GYMHUB-{{ user.id }}</code></div>
                         </div>
-                        <span class="badge bg-success rounded-pill">{{ membership.tier }}</span>
+                        <span class="badge bg-success rounded-pill me-2">{{ membership.tier }}</span>
+                        <a href="{% url 'upgrade_membership' membership.id %}" class="btn btn-sm btn-outline-primary">Upgrade</a>
                     </li>
                     {% endfor %}
                 </ul>

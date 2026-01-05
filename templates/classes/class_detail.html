@@ -37,7 +37,9 @@
                         <div class="col-md-6">
                             <h5><i class="fas fa-calendar text-primary me-2"></i>Schedule</h5>
                             <p><strong>{{ gym_class.start_time|date:"l, F d, Y" }}</strong></p>
-                            <p>{{ gym_class.start_time|time:"H:i" }} - {{ gym_class.end_time|time:"H:i" }}</p>
+                            <p>
+                              {{ gym_class.start_time|time:"H:i" }}{% if gym_class.end_time and gym_class.end_time != gym_class.start_time %} - {{ gym_class.end_time|time:"H:i" }}{% endif %}
+                            </p>
                         </div>
                     </div>
 
@@ -76,6 +78,24 @@
                         </script>
                         <p class="text-muted">{{ gym_class.get_available_spots }} spots remaining</p>
                     </div>
+
+                    {% if user.is_authenticated and user.role == 'TRAINER' and gym_class.trainer == user %}
+                    <div class="mb-4">
+                        <h5><i class="fas fa-users me-2"></i>Enrolled Members</h5>
+                        {% if enrolled_members %}
+                        <ul class="list-group">
+                          {% for b in enrolled_members %}
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ b.member.get_full_name|default:b.member.username }}</span>
+                            <span class="badge bg-success">{{ b.get_status_display }}</span>
+                          </li>
+                          {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-muted mb-0">No confirmed bookings yet.</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

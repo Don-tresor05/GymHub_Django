@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from .models import GymClass, ClassBooking, ClassWaitlist
-from .forms import ClassBookingForm
+from .forms import ClassBookingForm, ClassForm
 from members.models import Membership
 
 def class_list(request):
@@ -44,12 +44,16 @@ def class_detail(request, pk):
         membership = Membership.objects.filter(user=request.user, gym=gym_class.gym, is_active=True).first()
         can_book = membership is not None and not user_booking and not user_in_waitlist
     
+    # Enrolled members for trainer view
+    enrolled_members = ClassBooking.objects.filter(gym_class=gym_class, status='CONFIRMED').select_related('member')
+    
     context = {
         'gym_class': gym_class,
         'user_booking': user_booking,
         'user_in_waitlist': user_in_waitlist,
         'can_book': can_book,
-        'title': gym_class.name
+        'title': gym_class.name,
+        'enrolled_members': enrolled_members,
     }
     
     return render(request, 'classes/class_detail.html', context)
@@ -145,4 +149,58 @@ def my_bookings(request):
     }
     
     return render(request, 'classes/my_bookings.html', context)
+
+@login_required
+def create_class(request):
+    """Create a class (gym owners, trainers, staff with class permission)"""
+    # Permission check
+    allowed = False
+    if request.user.role in ['GYM_OWNER', 'TRAINER']:
+        allowed = True
+    elif request.user.role == 'STAFF':
+        from gyms.models import GymStaff
+        allowed = GymStaff.objects.filter(user=request.user, is_active=True, can_manage_classes=True).exists()
+    if not allowed:
+        messages.error(request, 'Not authorized to create classes.')
+        return redirect('class_list')
+    
+    if request.method == 'POST':
+        form = ClassForm(request.POST, user=request.user)
+        if form.is_valid():
+            gym_class = form.save(commit=False)
+            # Assign trainer
+            if request.user.role == 'TRAINER' and not gym_class.trainer:
+                gym_class.trainer = request.user
+            gym_class.save()
+            messages.success(request, 'Class created successfully!')
+            return redirect('class_list')
+    else:
+        form = ClassForm(user=request.user)
+    
+    return render(request, 'classes/class_create.html', {'form': form, 'title': 'Create Class'})
+
+@login_required
+def manage_classes(request, gym_id=None):
+    """Manage classes for a gym (owner/staff) or trainer's assigned classes"""
+    if request.user.role == 'GYM_OWNER':
+        from gyms.models import Gym
+        gyms = Gym.objects.filter(owner=request.user)
+        classes = GymClass.objects.filter(gym__in=gyms).order_by('-start_time')
+    elif request.user.role == 'STAFF':
+        from gyms.models import GymStaff
+        gym_ids = GymStaff.objects.filter(user=request.user, is_active=True).values_list('gym_id', flat=True)
+        classes = GymClass.objects.filter(gym_id__in=gym_ids).order_by('-start_time')
+        gyms = None
+    elif request.user.role == 'TRAINER':
+        classes = GymClass.objects.filter(trainer=request.user).order_by('-start_time')
+        gyms = None
+    else:
+        messages.error(request, 'Not authorized to manage classes.')
+        return redirect('class_list')
+    
+    return render(request, 'classes/manage_classes.html', {
+        'classes': classes,
+        'title': 'Manage Classes',
+        'gyms': gyms,
+    })
 

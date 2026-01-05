@@ -12,5 +12,6 @@ urlpatterns = [
     # Analytics dashboards
     path('revenue/', revenue_dashboard, name='revenue_dashboard'),
     path('attendance/', attendance_dashboard, name='attendance_dashboard'),
-    path('members/', member_dashboard, name='member_dashboard'),
+    # Rename to avoid conflict with accounts' member_dashboard
+    path('members/', member_dashboard, name='analytics_member_dashboard'),
 ]

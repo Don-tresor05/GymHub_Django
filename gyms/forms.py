@@ -6,13 +6,15 @@ from members.models import MembershipPlan
 class GymUpdateForm(forms.ModelForm):
     class Meta:
         model = Gym
-        fields = ['name', 'address', 'contact_phone', 'description', 'image']
+        fields = ['name', 'address', 'contact_phone', 'description', 'image', 'opening_time', 'closing_time']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Gym Name'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Full Address'}),
             'contact_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+250780000000'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Tell members about your gym...'}),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'opening_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'closing_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
         }
 
 

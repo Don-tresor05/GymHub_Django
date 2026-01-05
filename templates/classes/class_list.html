@@ -30,7 +30,7 @@
                             <i class="fas fa-calendar me-2"></i>{{ gym_class.start_time|date:"D, M d, Y" }}
                         </p>
                         <p class="mb-2">
-                            <i class="fas fa-clock me-2"></i>{{ gym_class.start_time|time:"H:i" }} - {{ gym_class.end_time|time:"H:i" }}
+                            <i class="fas fa-clock me-2"></i>{{ gym_class.start_time|time:"H:i" }}{% if gym_class.end_time and gym_class.end_time != gym_class.start_time %} - {{ gym_class.end_time|time:"H:i" }}{% endif %}
                         </p>
                         {% if gym_class.trainer %}
                         <p class="mb-2">

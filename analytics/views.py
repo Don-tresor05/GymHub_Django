@@ -373,8 +373,10 @@ def member_dashboard(request):
     elif request.user.role == 'STAFF' and staff_assignment:
         gym = staff_assignment.gym
     else:
-        messages.error(request, 'You do not have permission to view analytics.')
-        return redirect('home')
+        # Allow members to view gym classes analytics only for their gym
+        from members.models import Membership
+        membership = Membership.objects.filter(user=request.user, is_active=True).first()
+        gym = membership.gym if membership else None
     
     if not gym:
         messages.error(request, 'No gym found.')
@@ -388,8 +390,8 @@ def member_dashboard(request):
     active_members = memberships.filter(is_active=True).count()
     inactive_members = memberships.filter(is_active=False).count()
     
-    # Members by plan
-    members_by_plan = memberships.filter(is_active=True).values('membership_plan__name').annotate(
+    # Members by tier (compatible with Membership model)
+    members_by_plan = memberships.filter(is_active=True).values('tier').annotate(
         count=Count('id')
     )
     
@@ -409,7 +411,13 @@ def member_dashboard(request):
     signup_labels = [item['month'].strftime('%b %Y') for item in monthly_signups]
     signup_data = [item['count'] for item in monthly_signups]
     
-    plan_labels = [item['membership_plan__name'] or 'No Plan' for item in members_by_plan]
+    # Map tier codes to readable names
+    tier_names = {
+        'BASIC': 'Basic',
+        'PREMIUM': 'Premium',
+        'CORPORATE': 'Corporate',
+    }
+    plan_labels = [tier_names.get(item['tier'], item['tier'] or 'No Tier') for item in members_by_plan]
     plan_data = [item['count'] for item in members_by_plan]
     
     context = {

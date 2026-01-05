@@ -18,8 +18,10 @@ class CustomLoginView(LoginView):
             return '/gyms/dashboard/'
         elif user.role == 'STAFF':
             return '/accounts/staff/dashboard/'
-        elif user.role in ['MEMBER', 'TRAINER']:
+        elif user.role == 'MEMBER':
             return '/accounts/dashboard/'
+        elif user.role == 'TRAINER':
+            return '/trainers/dashboard/'
         else:
             return '/'
 
@@ -108,12 +110,14 @@ def edit_profile_view(request):
 @login_required
 def member_dashboard(request):
     """Dashboard for regular members"""
-    if request.user.role not in ['MEMBER', 'TRAINER']:
+    if request.user.role != 'MEMBER':
         # Redirect based on role
         if request.user.role == 'GYM_OWNER':
             return redirect('gym_owner_dashboard')
         elif request.user.role == 'STAFF':
             return redirect('staff_dashboard')
+        elif request.user.role == 'TRAINER':
+            return redirect('trainer_dashboard')
         else:
             return redirect('home')
     
@@ -179,7 +183,7 @@ def staff_dashboard(request):
     today_members = Membership.objects.filter(
         gym=gym,
         is_active=True,
-        created_at__date=date.today()
+        joined_at__date=date.today()
     ).count()
     
     total_active_members = Membership.objects.filter(gym=gym, is_active=True).count()
