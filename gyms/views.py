@@ -75,15 +75,25 @@ def gym_detail_owner(request, pk):
 
 @login_required
 def gym_edit(request, pk):
-    """Edit gym details"""
-    gym = get_object_or_404(Gym, pk=pk, owner=request.user)
+    """Edit gym details (owner or assigned staff)"""
+    if request.user.role == 'GYM_OWNER':
+        gym = get_object_or_404(Gym, pk=pk, owner=request.user)
+    elif request.user.role == 'STAFF':
+        assignment = GymStaff.objects.filter(gym_id=pk, user=request.user, is_active=True).first()
+        if not assignment:
+            messages.error(request, 'Not authorized to edit this gym.')
+            return redirect('home')
+        gym = assignment.gym
+    else:
+        messages.error(request, 'Not authorized to edit gyms.')
+        return redirect('home')
     
     if request.method == 'POST':
         form = GymUpdateForm(request.POST, request.FILES, instance=gym)
         if form.is_valid():
             form.save()
             messages.success(request, 'Gym details updated successfully!')
-            return redirect('gym_detail_owner', pk=gym.pk)
+            return redirect('gym_detail', pk=gym.pk)
     else:
         form = GymUpdateForm(instance=gym)
     
