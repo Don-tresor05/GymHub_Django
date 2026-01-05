@@ -26,6 +26,8 @@
                 <th>Type</th>
                 <th>Date & Time</th>
                 <th>Capacity</th>
+                <th>Enrolled</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -36,6 +38,8 @@
                 <td><span class="badge bg-info">{{ c.class_type }}</span></td>
                 <td>{{ c.start_time|date:"M d, Y - g:i A" }}</td>
                 <td>{{ c.capacity }}</td>
+                <td>{{ c.get_enrolled_count }}</td>
+                <td><a href="{% url 'class_detail' c.pk %}" class="btn btn-sm btn-outline-primary">View</a></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -47,15 +51,13 @@
       </div>
     </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-lg-4">
-    <div class="card shadow-sm mb-3">
-      <div class="card-header bg-dark text-white">
-        <h6 class="mb-0"><i class="fas fa-id-badge me-2"></i>My Assignment</h6>
-      </div>
-      <div class="card-body">
-        {% if staff_assignment %}
+    <div class="col-lg-4">
+      {% if staff_assignment %}
+      <div class="card shadow-sm mb-3">
+        <div class="card-header bg-dark text-white">
+          <h6 class="mb-0"><i class="fas fa-id-badge me-2"></i>My Assignment</h6>
+        </div>
+        <div class="card-body">
           <p class="mb-1"><strong>Gym:</strong> {{ staff_assignment.gym.name }}</p>
           <p class="mb-1"><strong>Check-in:</strong> {% if staff_assignment.can_check_in_members %}<span class="text-success">Allowed</span>{% else %}<span class="text-muted">No</span>{% endif %}</p>
           <p class="mb-3"><strong>Manage Classes:</strong> {% if staff_assignment.can_manage_classes %}<span class="text-success">Allowed</span>{% else %}<span class="text-muted">No</span>{% endif %}</p>
@@ -64,29 +66,47 @@
             <i class="fas fa-qrcode me-2"></i>Go to Check-in
           </a>
           {% endif %}
-        {% else %}
-          <p class="text-muted mb-0">No active staff assignment.</p>
-        {% endif %}
+        </div>
       </div>
+      {% endif %}
     </div>
-
-    <div class="card shadow-sm">
+  </div>
+<div class="row">
+  <div class="col-12">
+<div class="card shadow-sm">
       <div class="card-header bg-secondary text-white">
         <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Classes</h5>
       </div>
       <div class="card-body">
         {% if recent_classes %}
-        <ul class="list-group list-group-flush">
-          {% for c in recent_classes %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <strong>{{ c.name }}</strong>
-              <small class="text-muted d-block">{{ c.start_time|date:"M d, Y - g:i A" }} at {{ c.gym.name }}</small>
-            </div>
-            <span class="badge bg-secondary">{{ c.class_type }}</span>
-          </li>
-          {% endfor %}
-        </ul>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Gym</th>
+                <th>Type</th>
+                <th>Date & Time</th>
+                <th>Capacity</th>
+                <th>Enrolled</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in recent_classes %}
+              <tr>
+                <td><strong>{{ c.name }}</strong></td>
+                <td>{{ c.gym.name }}</td>
+                <td><span class="badge bg-secondary">{{ c.class_type }}</span></td>
+                <td>{{ c.start_time|date:"M d, Y - g:i A" }}</td>
+                <td>{{ c.capacity }}</td>
+                <td>{{ c.get_enrolled_count }}</td>
+                <td><a href="{% url 'class_detail' c.pk %}" class="btn btn-sm btn-outline-primary">View</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
         {% else %}
         <p class="text-muted mb-0">No recent classes.</p>
         {% endif %}

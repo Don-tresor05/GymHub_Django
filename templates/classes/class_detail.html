@@ -145,6 +145,10 @@
                                 <i class="fas fa-building me-2"></i>Join {{ gym_class.gym.name }}
                             </a>
                         {% endif %}
+                    {% elif user.is_authenticated %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle me-2"></i>Only members can book classes.
+                        </div>
                     {% else %}
                         <div class="alert alert-info">
                             <i class="fas fa-sign-in-alt me-2"></i>Please login to book this class.

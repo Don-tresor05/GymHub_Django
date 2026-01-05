@@ -16,8 +16,8 @@ import json
 @login_required
 def check_in_dashboard(request):
     """Dashboard for staff to manage check-ins"""
-    if request.user.role != 'STAFF':
-        messages.error(request, 'Only staff can access check-in system.')
+    if request.user.role not in ['STAFF', 'TRAINER']:
+        messages.error(request, 'Only staff or trainers can access check-in system.')
         return redirect('home')
     
     # Get staff assignment
@@ -53,8 +53,8 @@ def check_in_dashboard(request):
 @login_required
 def manual_check_in(request):
     """Manual check-in for members"""
-    if request.user.role != 'STAFF':
-        messages.error(request, 'Only staff can check in members.')
+    if request.user.role not in ['STAFF', 'TRAINER']:
+        messages.error(request, 'Only staff or trainers can check in members.')
         return redirect('home')
     
     staff_assignment = GymStaff.objects.filter(user=request.user).first()
@@ -104,8 +104,8 @@ def manual_check_in(request):
 @login_required
 def qr_check_in(request):
     """QR code check-in"""
-    if request.user.role != 'STAFF':
-        messages.error(request, 'Only staff can process QR check-ins.')
+    if request.user.role not in ['STAFF', 'TRAINER']:
+        messages.error(request, 'Only staff or trainers can process QR check-ins.')
         return redirect('home')
     
     staff_assignment = GymStaff.objects.filter(user=request.user).first()
@@ -173,8 +173,8 @@ def qr_check_in(request):
 @login_required
 def check_out(request, attendance_id):
     """Check out a member"""
-    if request.user.role != 'STAFF':
-        messages.error(request, 'Only staff can check out members.')
+    if request.user.role not in ['STAFF', 'TRAINER']:
+        messages.error(request, 'Only staff or trainers can check out members.')
         return redirect('home')
     
     staff_assignment = GymStaff.objects.filter(user=request.user).first()
