@@ -1,23 +1,9 @@
 from django.db import models
 from django.conf import settings
 import uuid
+from gymhub.constants import PaymentStatus, PaymentMethods
 
 class Payment(models.Model):
-    PAYMENT_STATUS = (
-        ('PENDING', 'Pending'),
-        ('COMPLETED', 'Completed'),
-        ('FAILED', 'Failed'),
-        ('REFUNDED', 'Refunded'),
-    )
-    
-    PAYMENT_METHOD = (
-        ('CASH', 'Cash'),
-        ('MTN_MOMO', 'MTN Mobile Money'),
-        ('AIRTEL_MONEY', 'Airtel Money'),
-        ('BANK_TRANSFER', 'Bank Transfer'),
-        ('CARD', 'Card'),
-    )
-    
     PAYMENT_TYPE = (
         ('MEMBERSHIP', 'Membership Fee'),
         ('CLASS', 'Class Fee'),
@@ -30,13 +16,13 @@ class Payment(models.Model):
     membership = models.ForeignKey('members.Membership', on_delete=models.SET_NULL, null=True, blank=True, related_name='payments')
     
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD, default='CASH')
+    payment_method = models.CharField(max_length=20, choices=PaymentMethods.CHOICES, default=PaymentMethods.CASH)
     payment_type = models.CharField(max_length=30, choices=PAYMENT_TYPE, default='MEMBERSHIP')
     
     transaction_id = models.CharField(max_length=100, unique=True, blank=True)
     mobile_money_number = models.CharField(max_length=15, blank=True)
     
-    status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='PENDING')
+    status = models.CharField(max_length=20, choices=PaymentStatus.CHOICES, default=PaymentStatus.PENDING)
     receipt_number = models.CharField(max_length=50, unique=True, blank=True)
     
     description = models.TextField(blank=True)
@@ -51,7 +37,7 @@ class Payment(models.Model):
             self.transaction_id = str(uuid.uuid4())
         
         # Generate receipt number if payment is completed
-        if self.status == 'COMPLETED' and not self.receipt_number:
+        if self.status == PaymentStatus.COMPLETED and not self.receipt_number:
             self.receipt_number = f"GH-{self.created_at.strftime('%Y%m%d')}-{str(uuid.uuid4())[:8].upper()}"
         
         super().save(*args, **kwargs)

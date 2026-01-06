@@ -3,18 +3,10 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 import uuid
+from gymhub.constants import MembershipTiers
 
 class MembershipPlan(models.Model):
     """Membership plans that gym owners can create for their gym"""
-    TIER_CHOICES = (
-        ('BASIC', 'Basic'),
-        ('PREMIUM', 'Premium'),
-        ('CORPORATE', 'Corporate'),
-        ('VIP', 'VIP'),
-        ('STUDENT', 'Student'),
-        ('FAMILY', 'Family'),
-    )
-    
     DURATION_CHOICES = (
         ('MONTHLY', 'Monthly'),
         ('QUARTERLY', '3 Months'),
@@ -24,7 +16,7 @@ class MembershipPlan(models.Model):
     
     gym = models.ForeignKey('gyms.Gym', on_delete=models.CASCADE, related_name='membership_plans')
     name = models.CharField(max_length=100, help_text="e.g., 'Basic Monthly', 'Premium Annual'")
-    tier = models.CharField(max_length=20, choices=TIER_CHOICES, default='BASIC')
+    tier = models.CharField(max_length=20, choices=MembershipTiers.CHOICES, default=MembershipTiers.BASIC)
     duration = models.CharField(max_length=20, choices=DURATION_CHOICES, default='MONTHLY')
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price in RWF")
     duration_days = models.IntegerField(default=30, help_text="Number of days this membership lasts")

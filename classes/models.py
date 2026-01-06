@@ -1,21 +1,11 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from gymhub.constants import ClassTypes, BookingStatus
 
 class GymClass(models.Model):
-    CLASS_TYPES = (
-        ('YOGA', 'Yoga'),
-        ('AEROBICS', 'Aerobics'),
-        ('WEIGHT_TRAINING', 'Weight Training'),
-        ('TRADITIONAL_DANCE', 'Traditional Dance'),
-        ('SPINNING', 'Spinning'),
-        ('ZUMBA', 'Zumba'),
-        ('PILATES', 'Pilates'),
-        ('OTHER', 'Other'),
-    )
-    
     name = models.CharField(max_length=200)
-    class_type = models.CharField(max_length=30, choices=CLASS_TYPES, default='OTHER')
+    class_type = models.CharField(max_length=30, choices=ClassTypes.CHOICES, default=ClassTypes.YOGA)
     description = models.TextField(blank=True)
     gym = models.ForeignKey('gyms.Gym', on_delete=models.CASCADE, related_name='classes')
     trainer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='assigned_classes')
@@ -26,7 +16,7 @@ class GymClass(models.Model):
     is_cancelled = models.BooleanField(default=False)
     
     def get_enrolled_count(self):
-        return self.bookings.filter(status='CONFIRMED').count()
+        return self.bookings.filter(status=BookingStatus.CONFIRMED).count()
     
     def get_available_spots(self):
         return self.capacity - self.get_enrolled_count()
@@ -44,21 +34,14 @@ class GymClass(models.Model):
 
 class ClassBooking(models.Model):
     """Track member bookings for classes"""
-    STATUS_CHOICES = (
-        ('CONFIRMED', 'Confirmed'),
-        ('CANCELLED', 'Cancelled'),
-        ('ATTENDED', 'Attended'),
-        ('NO_SHOW', 'No Show'),
-    )
-    
     gym_class = models.ForeignKey(GymClass, on_delete=models.CASCADE, related_name='bookings')
     member = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='class_bookings')
     booked_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='CONFIRMED')
+    status = models.CharField(max_length=20, choices=BookingStatus.CHOICES, default=BookingStatus.CONFIRMED)
     
     def clean(self):
         # Check if class is full
-        if self.gym_class.is_full() and self.status == 'CONFIRMED':
+        if self.gym_class.is_full() and self.status == BookingStatus.CONFIRMED:
             raise ValidationError('This class is full. Please join the waitlist.')
     
     def __str__(self):
