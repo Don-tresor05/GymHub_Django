@@ -121,8 +121,6 @@ class UnifiedRegistrationForm(UserCreationForm):
                 self.add_error('gym_name', 'Gym name is required for gym owners.')
             if not cleaned_data.get('gym_address'):
                 self.add_error('gym_address', 'Gym address is required for gym owners.')
-            if not cleaned_data.get('registration_document'):
-                self.add_error('registration_document', 'Business registration document is required for gym owners.')
         
         elif role in ['STAFF', 'TRAINER']:
             if not cleaned_data.get('pending_gym'):

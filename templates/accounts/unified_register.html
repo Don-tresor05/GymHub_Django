@@ -155,6 +155,28 @@
                             {% endif %}
                         </div>
                         <div class="mb-3">
+                            <label for="{{ form.gym_address.id_for_label }}" class="form-label small fw-bold">
+                                {{ form.gym_address.label }}
+                            </label>
+                            {{ form.gym_address }}
+                            {% if form.gym_address.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.gym_address.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.gym_phone.id_for_label }}" class="form-label small fw-bold">
+                                {{ form.gym_phone.label }}
+                            </label>
+                            {{ form.gym_phone }}
+                            {% if form.gym_phone.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.gym_phone.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
                             <label for="{{ form.registration_document.id_for_label }}" class="form-label small fw-bold">
                                 {{ form.registration_document.label }}
                             </label>
