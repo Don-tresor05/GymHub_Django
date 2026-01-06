@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Staff Dashboard - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="fas fa-user-tie"></i> Staff Dashboard - {{ gym.name }}
+        </h2>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                <h3 class="mb-0">{{ total_active_members }}</h3>
+                <p class="text-muted small mb-0">Active Members</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-success">
+            <div class="card-body text-center">
+                <i class="fas fa-user-plus fa-2x text-success mb-2"></i>
+                <h3 class="mb-0">{{ today_members }}</h3>
+                <p class="text-muted small mb-0">New Today</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-info">
+            <div class="card-body text-center">
+                <i class="fas fa-money-bill-wave fa-2x text-info mb-2"></i>
+                <h3 class="mb-0">{{ today_revenue|floatformat:0 }}</h3>
+                <p class="text-muted small mb-0">Today's Revenue (RWF)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-warning">
+            <div class="card-body text-center">
+                <i class="fas fa-id-badge fa-2x text-warning mb-2"></i>
+                <h3 class="mb-0">{{ staff_assignment.role }}</h3>
+                <p class="text-muted small mb-0">Your Role</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if staff_assignment.can_check_in_members %}
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'check_in_dashboard' %}" class="btn btn-lg btn-success w-100">
+                            <i class="fas fa-qrcode d-block mb-2" style="font-size: 2rem;"></i>
+                            Check-In System
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if staff_assignment.can_process_payments %}
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'process_payment' %}" class="btn btn-lg btn-info w-100">
+                            <i class="fas fa-cash-register d-block mb-2" style="font-size: 2rem;"></i>
+                            Process Payment
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if staff_assignment.can_manage_classes %}
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'manage_classes' %}" class="btn btn-lg btn-warning w-100">
+                            <i class="fas fa-calendar-alt d-block mb-2" style="font-size: 2rem;"></i>
+                            Manage Classes
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if staff_assignment.can_view_reports %}
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'payment_history' %}" class="btn btn-lg btn-secondary w-100">
+                            <i class="fas fa-chart-bar d-block mb-2" style="font-size: 2rem;"></i>
+                            View Reports
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'gym_edit' staff_assignment.gym.pk %}" class="btn btn-lg btn-outline-dark w-100">
+                            <i class="fas fa-clock d-block mb-2" style="font-size: 2rem;"></i>
+                            Edit Gym Hours
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Permissions Info -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="fas fa-key"></i> Your Permissions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled {% if staff_assignment.can_manage_members %}checked{% endif %}>
+                            <label class="form-check-label">
+                                <i class="fas fa-users"></i> Manage Members
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled {% if staff_assignment.can_process_payments %}checked{% endif %}>
+                            <label class="form-check-label">
+                                <i class="fas fa-cash-register"></i> Process Payments
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled {% if staff_assignment.can_manage_classes %}checked{% endif %}>
+                            <label class="form-check-label">
+                                <i class="fas fa-calendar"></i> Manage Classes
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled {% if staff_assignment.can_view_reports %}checked{% endif %}>
+                            <label class="form-check-label">
+                                <i class="fas fa-chart-bar"></i> View Reports
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+{% if staff_assignment.can_manage_members or staff_assignment.can_process_payments %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if staff_assignment.can_manage_members %}
+                    <div class="col-md-4">
+                        <div class="d-grid">
+                            <button class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-user-check fa-2x mb-2 d-block"></i>
+                                Check-In Member
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if staff_assignment.can_process_payments %}
+                    <div class="col-md-4">
+                        <div class="d-grid">
+                            <button class="btn btn-outline-success btn-lg">
+                                <i class="fas fa-money-bill fa-2x mb-2 d-block"></i>
+                                Process Payment
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if staff_assignment.can_manage_members %}
+                    <div class="col-md-4">
+                        <div class="d-grid">
+                            <button class="btn btn-outline-info btn-lg">
+                                <i class="fas fa-user-plus fa-2x mb-2 d-block"></i>
+                                Register Member
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Recent Payments -->
+{% if staff_assignment.can_process_payments %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-receipt"></i> Recent Payments</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_payments %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Receipt #</th>
+                                <th>Member</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in recent_payments %}
+                            <tr>
+                                <td><code>{{ payment.receipt_number }}</code></td>
+                                <td>{{ payment.user.get_full_name|default:payment.user.username }}</td>
+                                <td>{{ payment.created_at|date:"M d, g:i A" }}</td>
+                                <td>{{ payment.payment_type }}</td>
+                                <td><strong>{{ payment.amount|floatformat:0 }} RWF</strong></td>
+                                <td><span class="badge bg-secondary">{{ payment.payment_method }}</span></td>
+                                <td>
+                                    {% if payment.status == 'COMPLETED' %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif payment.status == 'PENDING' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">{{ payment.status }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No recent payments to display.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

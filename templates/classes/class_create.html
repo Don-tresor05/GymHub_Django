@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-plus-circle me-2"></i>{{ title }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label">Name</label>
+    {{ form.name }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Type</label>
+    {{ form.class_type }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Gym</label>
+    {{ form.gym }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Trainer</label>
+    {{ form.trainer }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Start Time</label>
+    {{ form.start_time }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">End Time</label>
+    {{ form.end_time }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Capacity</label>
+    {{ form.capacity }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Description</label>
+    {{ form.description }}
+  </div>
+  <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Create Class</button>
+</form>
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white text-center">
+                    <h3 class="mb-0"><i class="fas fa-check-circle me-2"></i>Payment Successful</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Receipt Header -->
+                    <div class="text-center mb-4">
+                        <h4>GymHub Rwanda</h4>
+                        <p class="mb-0">{{ payment.gym.name }}</p>
+                        <p class="text-muted small">{{ payment.gym.address }}</p>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Receipt Details -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Receipt Number:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-primary">{{ payment.receipt_number }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Date & Time:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            {{ payment.created_at|date:"M d, Y H:i" }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Member:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            {{ payment.user.get_full_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Payment Type:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            {{ payment.get_payment_type_display }}
+                        </div>
+                    </div>
+                    
+                    {% if payment.membership %}
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Membership Plan:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            {{ payment.membership.plan.name }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <!-- Amount -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h5><strong>Amount Paid:</strong></h5>
+                        </div>
+                        <div class="col-6 text-end">
+                            <h4 class="text-success"><strong>{{ payment.amount|floatformat:0 }} RWF</strong></h4>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Payment Method -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Payment Method:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            {{ payment.get_payment_method_display }}
+                        </div>
+                    </div>
+                    
+                    {% if payment.mobile_money_number %}
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Mobile Money Number:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            {{ payment.mobile_money_number }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Transaction ID:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <small class="text-muted">{{ payment.transaction_id }}</small>
+                        </div>
+                    </div>
+                    
+                    {% if payment.description %}
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <strong>Notes:</strong>
+                            <p class="mb-0">{{ payment.description }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <!-- Footer -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Processed By:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            {{ payment.processed_by.get_full_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Status:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-success">{{ payment.get_status_display }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="text-center mt-4">
+                        <button onclick="window.print()" class="btn btn-primary">
+                            <i class="fas fa-print me-2"></i>Print Receipt
+                        </button>
+                        <a href="{% url 'payment_history' %}" class="btn btn-secondary">
+                            <i class="fas fa-list me-2"></i>Payment History
+                        </a>
+                        <a href="{% url 'process_payment' %}" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>New Payment
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-footer text-center text-muted small">
+                    <p class="mb-0">Thank you for your payment!</p>
+                    <p class="mb-0">For any inquiries, please contact the gym reception.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .btn, .card-footer {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Membership Plans - {{ gym.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'gym_owner_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'gym_detail_owner' gym.pk %}">{{ gym.name }}</a></li>
+                <li class="breadcrumb-item active">Membership Plans</li>
+            </ol>
+        </nav>
+        <h2 class="mb-4">
+            <i class="fas fa-ticket-alt"></i> Membership Plans - {{ gym.name }}
+        </h2>
+    </div>
+</div>
+
+<!-- Create New Plan Form -->
+<div class="row mb-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Create New Membership Plan</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Plan Name *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger small">{{ form.name.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">{{ form.name.help_text }}</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.tier.id_for_label }}" class="form-label">Tier *</label>
+                            {{ form.tier }}
+                            {% if form.tier.errors %}
+                                <div class="text-danger small">{{ form.tier.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.duration.id_for_label }}" class="form-label">Duration *</label>
+                            {{ form.duration }}
+                            {% if form.duration.errors %}
+                                <div class="text-danger small">{{ form.duration.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.price.id_for_label }}" class="form-label">Price (RWF) *</label>
+                            {{ form.price }}
+                            {% if form.price.errors %}
+                                <div class="text-danger small">{{ form.price.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">{{ form.price.help_text }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.duration_days.id_for_label }}" class="form-label">Duration (Days) *</label>
+                            {{ form.duration_days }}
+                            {% if form.duration_days.errors %}
+                                <div class="text-danger small">{{ form.duration_days.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">{{ form.duration_days.help_text }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">{{ form.description.help_text }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.max_family_members.id_for_label }}" class="form-label">Max Family Members</label>
+                        {{ form.max_family_members }}
+                        {% if form.max_family_members.errors %}
+                            <div class="text-danger small">{{ form.max_family_members.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">{{ form.max_family_members.help_text }}</div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                            Active (Available for purchase)
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-save"></i> Create Plan
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Existing Plans List -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Existing Membership Plans ({{ plans.count }})</h5>
+            </div>
+            <div class="card-body">
+                {% if plans %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Plan Name</th>
+                                    <th>Tier</th>
+                                    <th>Duration</th>
+                                    <th>Price</th>
+                                    <th>Members Allowed</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for plan in plans %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ plan.name }}</strong>
+                                        {% if plan.description %}
+                                        <br><small class="text-muted">{{ plan.description|truncatewords:10 }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td><span class="badge bg-info">{{ plan.get_tier_display }}</span></td>
+                                    <td>{{ plan.duration_days }} days</td>
+                                    <td><strong>{{ plan.price|floatformat:0 }} RWF</strong></td>
+                                    <td>{{ plan.max_family_members }}</td>
+                                    <td>
+                                        {% if plan.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'edit_membership_plan' gym.pk plan.pk %}" 
+                                               class="btn btn-outline-primary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'delete_membership_plan' gym.pk plan.pk %}" 
+                                               class="btn btn-outline-danger" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No membership plans created yet.</p>
+                        <p class="small">Create your first plan using the form on the left!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        <a href="{% url 'gym_detail_owner' gym.pk %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Gym Management
+        </a>
+    </div>
+</div>
+
+{% endblock %}

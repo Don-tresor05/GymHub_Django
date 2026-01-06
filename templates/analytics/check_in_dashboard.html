@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-qrcode me-2"></i>{{ title }}</h1>
+        <div class="btn-group" role="group">
+            <a href="{% url 'qr_check_in' %}" class="btn btn-primary">
+                <i class="fas fa-qrcode me-2"></i>QR Check-In
+            </a>
+            <a href="{% url 'manual_check_in' %}" class="btn btn-outline-primary">
+                <i class="fas fa-user-plus me-2"></i>Manual Check-In
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ total_today }}</h3>
+                    <p class="card-text">Total Check-ins Today</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ currently_in_gym }}</h3>
+                    <p class="card-text">Currently in Gym</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ gym.name }}</h3>
+                    <p class="card-text">Your Gym</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currently Checked-In Members -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-users me-2"></i>Currently in Gym ({{ currently_in_gym }})</h5>
+        </div>
+        <div class="card-body">
+            {% if active_checkins %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Check-In Time</th>
+                                <th>Class</th>
+                                <th>Method</th>
+                                <th>Duration</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in active_checkins %}
+                            <tr>
+                                <td><strong>{{ attendance.member.username }}</strong></td>
+                                <td>{{ attendance.check_in_time|time:"H:i" }}</td>
+                                <td>{{ attendance.gym_class.name|default:"General Use" }}</td>
+                                <td>
+                                    {% if attendance.is_qr_checkin %}
+                                        <span class="badge bg-primary">QR Code</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Manual</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% now "U" as current_timestamp %}
+                                    {% with attendance.check_in_time|date:"U" as checkin_timestamp %}
+                                        {{ current_timestamp|add:"-"|add:checkin_timestamp|floatformat:"0"|add:"/60"|floatformat:"0" }} min
+                                    {% endwith %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'check_out' attendance.id %}" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-sign-out-alt me-1"></i>Check Out
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center">No members currently in gym.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Today's All Check-ins -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-history me-2"></i>Today's Check-ins</h5>
+        </div>
+        <div class="card-body">
+            {% if today_checkins %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                                <th>Class</th>
+                                <th>Duration</th>
+                                <th>Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in today_checkins %}
+                            <tr>
+                                <td>{{ attendance.member.username }}</td>
+                                <td>{{ attendance.check_in_time|time:"H:i" }}</td>
+                                <td>
+                                    {% if attendance.check_out_time %}
+                                        {{ attendance.check_out_time|time:"H:i" }}
+                                    {% else %}
+                                        <span class="badge bg-success">In Gym</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ attendance.gym_class.name|default:"General Use" }}</td>
+                                <td>
+                                    {% if attendance.get_duration %}
+                                        {{ attendance.get_duration }} min
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if attendance.is_qr_checkin %}
+                                        <i class="fas fa-qrcode text-primary"></i> QR
+                                    {% else %}
+                                        <i class="fas fa-user text-secondary"></i> Manual
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center">No check-ins today.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

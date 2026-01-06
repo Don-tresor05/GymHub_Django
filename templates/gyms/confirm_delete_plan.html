@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Membership Plan - {{ gym.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-4">Are you sure you want to delete the membership plan:</p>
+                
+                <div class="alert alert-warning">
+                    <h5><strong>{{ plan.name }}</strong></h5>
+                    <p class="mb-1"><strong>Tier:</strong> {{ plan.get_tier_display }}</p>
+                    <p class="mb-1"><strong>Price:</strong> {{ plan.price|floatformat:0 }} RWF</p>
+                    <p class="mb-0"><strong>Duration:</strong> {{ plan.duration_days }} days</p>
+                </div>
+
+                <div class="alert alert-danger">
+                    <i class="fas fa-info-circle"></i> <strong>Warning:</strong> This action cannot be undone. 
+                    Existing memberships using this plan will not be affected.
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger flex-grow-1">
+                            <i class="fas fa-trash"></i> Yes, Delete Plan
+                        </button>
+                        <a href="{% url 'manage_membership_plans' gym.pk %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - {{ gym.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'gym_owner_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'gym_detail_owner' gym.pk %}">{{ gym.name }}</a></li>
+            <li class="breadcrumb-item active">Manage Equipment</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4"><i class="fas fa-dumbbell me-2"></i>{{ title }}</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h3>{{ total_equipment }}</h3>
+                    <p class="mb-0">Total Equipment</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h3>{{ working_count }}</h3>
+                    <p class="mb-0">Working</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h3>{{ maintenance_count }}</h3>
+                    <p class="mb-0">Maintenance</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h3>{{ broken_count }}</h3>
+                    <p class="mb-0">Broken</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Equipment Button -->
+    <div class="mb-4">
+        <a href="{% url 'add_equipment' gym.pk %}" class="btn btn-success">
+            <i class="fas fa-plus me-2"></i>Add New Equipment
+        </a>
+    </div>
+
+    <!-- Equipment List -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0"><i class="fas fa-list me-2"></i>Equipment Inventory</h4>
+        </div>
+        <div class="card-body">
+            {% if equipment %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Brand</th>
+                            <th>Purchase Date</th>
+                            <th>Status</th>
+                            <th>Next Maintenance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in equipment %}
+                        <tr>
+                            <td><strong>{{ item.name }}</strong></td>
+                            <td>{{ item.brand|default:"N/A" }}</td>
+                            <td>{{ item.purchase_date|date:"M d, Y"|default:"N/A" }}</td>
+                            <td>
+                                {% if item.status == 'WORKING' %}
+                                    <span class="badge bg-success">{{ item.get_status_display }}</span>
+                                {% elif item.status == 'MAINTENANCE' %}
+                                    <span class="badge bg-warning">{{ item.get_status_display }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ item.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.next_maintenance %}
+                                    {{ item.next_maintenance|date:"M d, Y" }}
+                                {% else %}
+                                    <span class="text-muted">Not scheduled</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{% url 'edit_equipment' gym.pk item.pk %}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="post" action="{% url 'delete_equipment' gym.pk item.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this equipment?');">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center mb-0">No equipment added yet.</p>
+            <div class="text-center mt-3">
+                <a href="{% url 'add_equipment' gym.pk %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Add Your First Equipment
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{% url 'gym_detail_owner' gym.pk %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Gym Management
+        </a>
+    </div>
+</div>
+{% endblock %}

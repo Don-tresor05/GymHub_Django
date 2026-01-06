@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}{{ gym.name }} - GymHub Rwanda{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'gym_list' %}">Gyms</a></li>
+        <li class="breadcrumb-item active text-truncate" style="max-width: 200px;">{{ gym.name }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card glass-card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h1 class="display-5 fw-bold mb-3">{{ gym.name }}</h1>
+                <p class="lead text-primary mb-4"><i class="fas fa-map-marker-alt me-2"></i>{{ gym.address|truncatewords:10 }}</p>
+
+                <h4 class="section-title h5">About this Gym</h4>
+                <p class="text-muted mb-4">{{ gym.description|linebreaks }}</p>
+
+                <h4 class="section-title h5">Location & Contact</h4>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-map-pin text-primary me-3"></i> {{ gym.address }}</li>
+                    <li class="mb-2"><i class="fas fa-phone text-primary me-3"></i> {{ gym.contact_phone }}</li>
+                    {% if gym.opening_time and gym.closing_time %}
+                    <li class="mb-2"><i class="fas fa-clock text-primary me-3"></i> {{ gym.opening_time }} - {{ gym.closing_time }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-lg border-primary">
+            <div class="card-body p-4 text-center">
+                <h3 class="mb-3">Ready to Join?</h3>
+                <p class="text-muted mb-4">Become a member of <strong>{{ gym.name }}</strong> today and start your
+                    fitness journey.</p>
+
+                {% if user.is_authenticated %}
+                {% if user.role == 'MEMBER' %}
+                <a href="{% url 'join_gym' gym.pk %}" class="btn btn-primary btn-lg w-100 py-3 shadow">
+                    <i class="fas fa-check-circle me-2"></i>Join This Gym
+                </a>
+                {% else %}
+                <div class="alert alert-warning">
+                    You are logged in as a {{ user.get_role_display }}. Only members can join gyms.
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="d-grid gap-3">
+                    <a href="{% url 'register' %}?gym_id={{ gym.pk }}" class="btn btn-primary btn-lg py-3 shadow">
+                        Sign Up to Join
+                    </a>
+                    <p class="small text-muted mb-0">Already have an account?</p>
+                    <a href="{% url 'login' %}?next={% url 'gym_detail' gym.pk %}"
+                        class="btn btn-outline-secondary">Login First</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Membership Plans -->
+    <div class="col-12 mt-4">
+        <div class="card glass-card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-ticket-alt me-2"></i>Membership Plans</h5>
+                {% if user.is_authenticated and user.role == 'GYM_OWNER' and gym.owner == user %}
+                <a href="{% url 'manage_membership_plans' gym.pk %}" class="btn btn-sm btn-outline-primary">Manage Plans</a>
+                {% elif user.is_authenticated and user.role == 'STAFF' %}
+                <a href="{% url 'manage_membership_plans' gym.pk %}" class="btn btn-sm btn-outline-primary">Manage Plans</a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if active_plans %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Plan</th>
+                                <th>Tier</th>
+                                <th>Duration</th>
+                                <th>Price</th>
+                                <th>Members Allowed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for plan in active_plans %}
+                            <tr>
+                                <td>
+                                    <strong>{{ plan.name }}</strong>
+                                    {% if plan.description %}
+                                    <br><small class="text-muted">{{ plan.description|truncatewords:12 }}</small>
+                                    {% endif %}
+                                </td>
+                                <td><span class="badge bg-info">{{ plan.get_tier_display }}</span></td>
+                                <td>{{ plan.duration_days }} days</td>
+                                <td><strong>{{ plan.price|floatformat:0 }} RWF</strong></td>
+                                <td>{{ plan.max_family_members }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No active membership plans advertised for this gym.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Classes at this Gym -->
+    <div class="col-12 mt-4">
+        <div class="card glass-card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Upcoming Classes</h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_classes %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Type</th>
+                                <th>Trainer</th>
+                                <th>Date & Time</th>
+                                <th>Available Spots</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in upcoming_classes %}
+                            <tr>
+                                <td><strong>{{ c.name }}</strong></td>
+                                <td><span class="badge bg-info">{{ c.class_type }}</span></td>
+                                <td>{% if c.trainer %}{% if c.trainer.get_full_name %}{{ c.trainer.get_full_name }}{% else %}{{ c.trainer.username }}{% endif %}{% else %}TBD{% endif %}</td>
+                                <td>{{ c.start_time|date:"M d, Y - g:i A" }}</td>
+                                <td>
+                                    {% if c.capacity %}
+                                    <span class="badge bg-secondary">{{ c.get_available_spots }} / {{ c.capacity }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Unlimited</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No upcoming classes scheduled.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
