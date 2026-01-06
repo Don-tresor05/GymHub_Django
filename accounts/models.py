@@ -1,15 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from gymhub.constants import UserRoles
 
 class User(AbstractUser):
-    ROLE_CHOICES = (
-        ('MEMBER', 'Member'),
-        ('TRAINER', 'Trainer'),
-        ('GYM_OWNER', 'Gym Owner'),
-        ('STAFF', 'Staff'),
-        ('ADMIN', 'Admin'),
-    )
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='MEMBER')
+    role = models.CharField(max_length=20, choices=UserRoles.CHOICES, default=UserRoles.MEMBER)
     phone_number = models.CharField(max_length=15, blank=True)
     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
     emergency_contact_name = models.CharField(max_length=200, blank=True)

@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User
 from gyms.models import Gym
 from members.models import MembershipPlan
+from gymhub.constants import UserRoles
 
 class UserUpdateForm(forms.ModelForm):
     class Meta:
@@ -26,8 +27,8 @@ class UnifiedRegistrationForm(UserCreationForm):
     """Unified registration form for all user roles with approval workflow"""
     
     role = forms.ChoiceField(
-        choices=[choice for choice in User.ROLE_CHOICES if choice[0] != 'ADMIN'],
-        initial='MEMBER',
+        choices=[choice for choice in UserRoles.CHOICES if choice[0] != UserRoles.ADMIN],
+        initial=UserRoles.MEMBER,
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_role'}),
         help_text="Select your role"
     )
@@ -92,7 +93,7 @@ class UnifiedRegistrationForm(UserCreationForm):
         
         # Filter out excluded roles
         if exclude_roles:
-            role_choices = [(key, value) for key, value in User.ROLE_CHOICES if key not in exclude_roles]
+            role_choices = [(key, value) for key, value in UserRoles.CHOICES if key not in exclude_roles]
             self.fields['role'].choices = role_choices
         
         for field in self.fields:
@@ -112,17 +113,17 @@ class UnifiedRegistrationForm(UserCreationForm):
         role = cleaned_data.get('role')
         
         # Validate based on role
-        if role == 'MEMBER':
+        if role == UserRoles.MEMBER:
             if not cleaned_data.get('gym'):
                 self.add_error('gym', 'Please select a gym to join.')
         
-        elif role == 'GYM_OWNER':
+        elif role == UserRoles.GYM_OWNER:
             if not cleaned_data.get('gym_name'):
                 self.add_error('gym_name', 'Gym name is required for gym owners.')
             if not cleaned_data.get('gym_address'):
                 self.add_error('gym_address', 'Gym address is required for gym owners.')
         
-        elif role in ['STAFF', 'TRAINER']:
+        elif role in [UserRoles.STAFF, UserRoles.TRAINER]:
             if not cleaned_data.get('pending_gym'):
                 self.add_error('pending_gym', f'Please select a gym you want to work for as {role.lower()}.')
         
@@ -134,25 +135,25 @@ class UnifiedRegistrationForm(UserCreationForm):
         user.role = role
         
         # Set approval status based on role
-        if role == 'MEMBER':
+        if role == UserRoles.MEMBER:
             user.is_approved = True  # Members are auto-approved
         else:
             user.is_approved = False  # GYM_OWNER, STAFF, TRAINER need approval
             user.is_active = False  # Disable account until approved
         
         # Handle document upload for gym owners
-        if role == 'GYM_OWNER':
+        if role == UserRoles.GYM_OWNER:
             user.registration_document = self.cleaned_data.get('registration_document')
         
         # Set pending gym for staff/trainers
-        if role in ['STAFF', 'TRAINER']:
+        if role in [UserRoles.STAFF, UserRoles.TRAINER]:
             user.pending_gym = self.cleaned_data.get('pending_gym')
         
         if commit:
             user.save()
             
             # Create gym for gym owners (pending approval)
-            if role == 'GYM_OWNER':
+            if role == UserRoles.GYM_OWNER:
                 Gym.objects.create(
                     name=self.cleaned_data['gym_name'],
                     address=self.cleaned_data['gym_address'],
@@ -161,7 +162,7 @@ class UnifiedRegistrationForm(UserCreationForm):
                 )
             
             # Create membership for members
-            elif role == 'MEMBER':
+            elif role == UserRoles.MEMBER:
                 from members.models import Membership
                 from datetime import timedelta
                 from django.utils import timezone
@@ -203,7 +204,7 @@ class GymOwnerRegistrationForm(CustomUserCreationForm):
 
     def save(self, commit=True):
         user = super(CustomUserCreationForm, self).save(commit=False)
-        user.role = 'GYM_OWNER'
+        user.role = UserRoles.GYM_OWNER
         if commit:
             user.save()
             Gym.objects.create(

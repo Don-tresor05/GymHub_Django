@@ -6,6 +6,7 @@ from django.db.models import Sum
 from django.contrib.auth.views import LoginView
 from .models import User
 from .forms import CustomUserCreationForm, GymOwnerRegistrationForm, UserUpdateForm, UnifiedRegistrationForm
+from gymhub.constants import UserRoles
 
 class CustomLoginView(LoginView):
     """Custom login view with role-based redirects"""
@@ -14,13 +15,13 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         user = self.request.user
         
-        if user.role == 'GYM_OWNER':
+        if user.role == UserRoles.GYM_OWNER:
             return '/gyms/dashboard/'
-        elif user.role == 'STAFF':
+        elif user.role == UserRoles.STAFF:
             return '/accounts/staff/dashboard/'
-        elif user.role == 'MEMBER':
+        elif user.role == UserRoles.MEMBER:
             return '/accounts/dashboard/'
-        elif user.role == 'TRAINER':
+        elif user.role == UserRoles.TRAINER:
             return '/trainers/dashboard/'
         else:
             return '/'
@@ -31,11 +32,11 @@ def home_view(request):
         # Redirect to appropriate dashboard based on role
         user_role = getattr(request.user, 'role', None)
         
-        if user_role == 'GYM_OWNER':
+        if user_role == UserRoles.GYM_OWNER:
             return redirect('gym_owner_dashboard')
-        elif user_role == 'STAFF':
+        elif user_role == UserRoles.STAFF:
             return redirect('staff_dashboard')
-        elif user_role in ['MEMBER', 'TRAINER']:
+        elif user_role in [UserRoles.MEMBER, UserRoles.TRAINER]:
             return redirect('member_dashboard')
     
     # Show home page only for unauthenticated users
@@ -51,20 +52,20 @@ def register_view(request):
             user = form.save()
             role = user.role
             
-            if role == 'MEMBER':
+            if role == UserRoles.MEMBER:
                 # Auto-login for members
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 messages.success(request, f'Registration successful! Welcome to {form.cleaned_data.get("gym").name}!')
                 return redirect('member_dashboard')
-            elif role == 'GYM_OWNER':
+            elif role == UserRoles.GYM_OWNER:
                 messages.success(request, 'Registration submitted! Your account is pending admin approval. You will be notified via email once approved.')
                 return redirect('login')
-            elif role in ['STAFF', 'TRAINER']:
+            elif role in [UserRoles.STAFF, UserRoles.TRAINER]:
                 messages.success(request, f'Registration submitted! Your {role.lower()} request is pending approval from {form.cleaned_data.get("pending_gym").name}.')
                 return redirect('login')
     else:
         # Exclude GYM_OWNER from regular registration
-        form = UnifiedRegistrationForm(exclude_roles=['GYM_OWNER'])
+        form = UnifiedRegistrationForm(exclude_roles=[UserRoles.GYM_OWNER])
     
     context = {
         'form': form, 
@@ -75,16 +76,16 @@ def register_view(request):
 def gym_owner_register_view(request):
     """Specialized Gym Owner registration view"""
     if request.method == 'POST':
-        form = UnifiedRegistrationForm(request.POST, request.FILES, exclude_roles=['MEMBER', 'STAFF', 'TRAINER', 'ADMIN'])
+        form = UnifiedRegistrationForm(request.POST, request.FILES, exclude_roles=[UserRoles.MEMBER, UserRoles.STAFF, UserRoles.TRAINER, UserRoles.ADMIN])
         if form.is_valid():
             user = form.save()
             messages.success(request, 'Gym owner registration submitted! Your account is pending admin approval. You will be notified via email once approved.')
             return redirect('login')
     else:
         # Only allow GYM_OWNER role
-        form = UnifiedRegistrationForm(exclude_roles=['MEMBER', 'STAFF', 'TRAINER', 'ADMIN'])
+        form = UnifiedRegistrationForm(exclude_roles=[UserRoles.MEMBER, UserRoles.STAFF, UserRoles.TRAINER, UserRoles.ADMIN])
         # Set GYM_OWNER as the only and default option
-        form.fields['role'].initial = 'GYM_OWNER'
+        form.fields['role'].initial = UserRoles.GYM_OWNER
     
     return render(request, 'accounts/unified_register.html', {'form': form, 'title': 'Register Your Gym', 'is_gym_owner': True})
 
